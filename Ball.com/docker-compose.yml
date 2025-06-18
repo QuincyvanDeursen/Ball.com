@@ -1,58 +1,84 @@
-version: '3.9'
-
+name: ballcom
 services:
-
   rabbitmq:
     image: rabbitmq:3-management
+    container_name: "rabbitmq"
     ports:
-      - "5672:5672"     
-      - "15672:15672"
+      - 5672:5672
+      - 15672:15672
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     restart: unless-stopped
-
+  
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=63km6xou9Z8GeZ
       - MSSQL_PID=Express
     ports:
       - "1433:1433"
+    volumes:
+      - sqlvolume:/var/opt/mssql
     healthcheck:
-      test: ["CMD-SHELL", "exit 0"]  # Aangepast i.v.m. sqlcmd
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P '63km6xou9Z8GeZ' -C -Q 'SELECT 1'"]
       interval: 15s
       timeout: 10s
       retries: 10
-    volumes:
-      - sqlvolume:/var/opt/mssql
-
+      start_period: 90s
+    restart: unless-stopped
+  
   customerservice:
     build:
       context: .
       dockerfile: CustomerService/Dockerfile
+    container_name: customer_service
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      sqlserver:
+        condition: service_healthy
     ports:
       - "8080:8080"
       - "8081:8081"
-    depends_on:
-      - sqlserver
-    restart: on-failure
-
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+        
   paymentservice:
     build:
       context: .
       dockerfile: PaymentService/Dockerfile
+    container_name: payment_service
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      sqlserver:
+        condition: service_healthy
     ports:
       - "8082:8080"
       - "8083:8081"
-    depends_on:
-      - sqlserver
-    restart: on-failure
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
 
 volumes:
   sqlvolume:

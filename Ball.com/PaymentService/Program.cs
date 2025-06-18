@@ -1,19 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using PaymentService.Configuration;
 using PaymentService.Database;
 using PaymentService.Domain;
-using PaymentService.Handlers;
 using PaymentService.Repository;
 using PaymentService.Repository.Interfaces;
-using PaymentService.Services;
 using PaymentService.Services.Interfaces;
-using Shared.Infrastructure.Messaging;
-using Shared.Infrastructure.Messaging.Configuration;
-using Shared.Infrastructure.Messaging.Events;
-using Shared.Infrastructure.Messaging.Events.Interfaces;
-using Shared.Infrastructure.Messaging.Interfaces;
 
 
 
