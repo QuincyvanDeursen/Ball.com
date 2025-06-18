@@ -10,6 +10,6 @@ namespace PaymentService.Repository.Interfaces
         Task CreateAsync (Payment payment); 
         Task UpdateAsync (Payment payment);
 
-        Task<IEnumerable<Payment>> GetByCustomerId(Guid customerId);
+        Task<IEnumerable<Payment>> GetAllByCustomerId(Guid customerId);
     }
 }

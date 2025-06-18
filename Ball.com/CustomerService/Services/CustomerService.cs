@@ -2,6 +2,8 @@
 using CustomerService.Dto;
 using CustomerService.Repository.Interfaces;
 using CustomerService.Services.Interfaces;
+using Shared.Infrastructure.Messaging.Events;
+using Shared.Infrastructure.Messaging.Interfaces;
 
 
 namespace CustomerService.Services
@@ -10,14 +12,12 @@ namespace CustomerService.Services
     public class CustomerService : ICustomerService
     {
         private readonly ICustomerRepo _customerRepo;
-        //private readonly IMessagePublisher _publisher;
+        private readonly IEventPublisher _eventPublisher;
 
-        public CustomerService(
-            ICustomerRepo customerRepo
-           )
+        public CustomerService(ICustomerRepo customerRepo, IEventPublisher eventPublisher)
         {
             _customerRepo = customerRepo;
-
+            _eventPublisher = eventPublisher;
         }
 
         public async Task<Customer> Get(Guid id)
@@ -37,9 +37,6 @@ namespace CustomerService.Services
         public async Task Delete(Guid id)
         {
             await _customerRepo.DeleteCustomer(id);
-            //await _publisher.PublishAsync(
-            //    new CustomerDeletedEvent(id, DateTime.UtcNow),
-            //    "customer.deleted");
         }
 
         public async Task Create(CustomerCreateDto dto)
@@ -55,38 +52,28 @@ namespace CustomerService.Services
 
             await _customerRepo.AddCustomer(customer);
 
-            //await _publisher.PublishAsync(
-            //    new CustomerCreatedEvent(
-            //        customer.Id,
-            //        customer.FirstName,
-            //        customer.LastName,
-            //        customer.Email,
-            //        customer.Address,
-            //        customer.PhoneNumber,
-            //        DateTime.UtcNow),
-            //    "customer.created");
         }
 
         public async Task Update(Guid id, CustomerUpdateDto dto)
         {
             var customer = await _customerRepo.GetCustomer(id)
                 ?? throw new KeyNotFoundException($"Customer with ID {id} not found.");
+
             customer.PhoneNumber = dto.PhoneNumber ?? customer.PhoneNumber;
             customer.Address = dto.Address ?? customer.Address;
             customer.Email = dto.Email ?? customer.Email;
 
             await _customerRepo.UpdateCustomer(customer);
 
-            //await _publisher.PublishAsync(
-            //    new CustomerCreatedEvent(
-            //        customer.Id,
-            //        customer.FirstName,
-            //        customer.LastName,
-            //        customer.Email,
-            //        customer.Address,
-            //        customer.PhoneNumber,
-            //        DateTime.UtcNow),
-            //    "customer.updated");
+            // Maak event aan en publiceer
+            var customerUpdatedEvent = new CustomerUpdatedEvent
+            {
+                CustomerId = customer.Id,
+                PhoneNumber = customer.PhoneNumber,
+                Email = customer.Email
+            };
+
+            await _eventPublisher.PublishAsync(customerUpdatedEvent);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace PaymentService.Domain
 {
-    public class PaymentCustomer
+    public class Customer
     {
         public Guid Id { get; set; }
 

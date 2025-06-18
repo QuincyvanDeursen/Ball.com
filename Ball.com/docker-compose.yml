@@ -1,4 +1,17 @@
+version: '3.9'
+
 services:
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"     
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    restart: unless-stopped
+
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
@@ -8,7 +21,7 @@ services:
     ports:
       - "1433:1433"
     healthcheck:
-      test: ["CMD", "sqlcmd", "-S", "localhost", "-U", "sa", "-P", "63km6xou9Z8GeZ", "-Q", "SELECT 1"]
+      test: ["CMD-SHELL", "exit 0"]  # Aangepast i.v.m. sqlcmd
       interval: 15s
       timeout: 10s
       retries: 10
@@ -22,8 +35,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
-     - "8080:8080"
-     - "8081:8081"
+      - "8080:8080"
+      - "8081:8081"
     depends_on:
       - sqlserver
     restart: on-failure
@@ -35,11 +48,11 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
-     - "8082:8080"
-     - "8083:8081"
+      - "8082:8080"
+      - "8083:8081"
     depends_on:
       - sqlserver
     restart: on-failure
 
 volumes:
-    sqlvolume:
+  sqlvolume:

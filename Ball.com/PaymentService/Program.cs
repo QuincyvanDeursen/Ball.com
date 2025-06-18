@@ -1,11 +1,19 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using PaymentService.Configuration;
 using PaymentService.Database;
 using PaymentService.Domain;
+using PaymentService.Handlers;
 using PaymentService.Repository;
 using PaymentService.Repository.Interfaces;
 using PaymentService.Services;
 using PaymentService.Services.Interfaces;
+using Shared.Infrastructure.Messaging;
+using Shared.Infrastructure.Messaging.Configuration;
+using Shared.Infrastructure.Messaging.Events;
+using Shared.Infrastructure.Messaging.Events.Interfaces;
+using Shared.Infrastructure.Messaging.Interfaces;
 
 
 
@@ -18,6 +26,8 @@ builder.Services.AddDbContext<PaymentDbContext>(
 builder.Services.AddScoped<IPaymentRepo, PaymentRepo>();
 builder.Services.AddScoped<IPaymentService, PaymentService.Services.PaymentService>();
 
+//RabbitMq setup, zie configuration folder.
+builder.Services.AddRabbitMqMessaging(builder.Configuration);
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -68,7 +78,7 @@ using (var scope = app.Services.CreateScope())
                 TotalPrice = 99.99m,
                 Status = PaymentStatus.Paid,
 
-                Customer = new PaymentCustomer
+                Customer = new Customer
                 {
                     Id = Guid.Parse("a1a1a1a1-a1a1-1111-aaaa-111111111111"),
                     FirstName = "Quincy",
@@ -84,7 +94,7 @@ new Payment
     TotalPrice = 49.50m,
     Status = PaymentStatus.Pending,
 
-    Customer = new PaymentCustomer
+    Customer = new Customer
     {
         Id = Guid.Parse("b2b2b2b2-b2b2-2222-bbbb-222222222222"),
         FirstName = "Bart",

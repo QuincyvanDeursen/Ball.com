@@ -7,7 +7,7 @@ namespace PaymentService.Dto
         public decimal TotalPrice { get; set; }
         public PaymentStatus Status { get; set; }
 
-        public PaymentCustomer Customer { get; set; }
+        public Customer Customer { get; set; }
 
     }
 }

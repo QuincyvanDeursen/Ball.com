@@ -35,7 +35,7 @@ namespace PaymentService.Repository
             await context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Payment>> GetByCustomerId(Guid customerId)
+        public async Task<IEnumerable<Payment>> GetAllByCustomerId(Guid customerId)
         {
             return await context.Payments
                 .Where(p => p.Customer.Id == customerId)

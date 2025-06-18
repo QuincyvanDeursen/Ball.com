@@ -1,3 +1,4 @@
+using CustomerService.Configuration;
 using CustomerService.Database;
 using CustomerService.Domain;
 using CustomerService.Repository;
@@ -17,7 +18,8 @@ builder.Services.AddDbContext<CustomerDbContext>(
 builder.Services.AddScoped<ICustomerRepo, CustomerRepo>();
 builder.Services.AddScoped<ICustomerService, CustomerService.Services.CustomerService>();
 
-// Register RabbitMQ connection and message publisher
+//RabbitMq setup, zie configuration folder.
+builder.Services.AddRabbitMqMessaging(builder.Configuration);
 
 
 builder.Services.AddControllers();

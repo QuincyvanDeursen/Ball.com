@@ -13,6 +13,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["PaymentService/PaymentService.csproj", "PaymentService/"]
+COPY ["Shared.Infrastructure/Shared.Infrastructure.csproj", "Shared.Infrastructure/"]
 RUN dotnet restore "./PaymentService/PaymentService.csproj"
 COPY . .
 WORKDIR "/src/PaymentService"
