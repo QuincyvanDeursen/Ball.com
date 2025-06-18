@@ -1,6 +1,6 @@
-﻿namespace CustomerService.Domain
+﻿namespace PaymentService.Domain
 {
-    public class Customer
+    public class PaymentCustomer
     {
         public Guid Id { get; set; }
 
@@ -13,6 +13,5 @@
         public string Email { get; set; } = string.Empty;
 
         public string Address { get; set; } = string.Empty;
-
     }
 }

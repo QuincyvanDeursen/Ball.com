@@ -5,7 +5,6 @@ using CustomerService.Repository.Interfaces;
 using CustomerService.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +16,9 @@ builder.Services.AddDbContext<CustomerDbContext>(
 // Add services to the container.
 builder.Services.AddScoped<ICustomerRepo, CustomerRepo>();
 builder.Services.AddScoped<ICustomerService, CustomerService.Services.CustomerService>();
+
+// Register RabbitMQ connection and message publisher
+
 
 builder.Services.AddControllers();
 
@@ -38,8 +40,18 @@ builder.Services.AddSwaggerGen(options =>
     */
 });
 
-var app = builder.Build();
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
+var app = builder.Build();
+app.UseCors();
 // Swagger UI inschakelen
 if (app.Environment.IsDevelopment())
 {
@@ -66,6 +78,7 @@ using (var scope = app.Services.CreateScope())
                                 FirstName = "Quincy",
                                 LastName = "van Deursen",
                                 PhoneNumber = "0612345678",
+                                Email = "jvd@student.avans.nl",
                                 Address = "Avansstraat 123, 1234AB Breda"
                             },
                 new Customer
@@ -74,6 +87,7 @@ using (var scope = app.Services.CreateScope())
                     FirstName = "Bart",
                     LastName = "Kroeten",
                     PhoneNumber = "0612345678",
+                    Email = "qvd@student.avans.nl",
                     Address = "Avansstraat 456, 1234AB Breda"
                 },
                 new Customer
@@ -82,6 +96,7 @@ using (var scope = app.Services.CreateScope())
                     FirstName = "Ruben",
                     LastName = "van Tilburg",
                     PhoneNumber = "0612345678",
+                    Email = "svd@student.avans.nl",
                     Address = "Avansstraat 789, 1234AB Breda"
                 },
                 new Customer
@@ -90,6 +105,7 @@ using (var scope = app.Services.CreateScope())
                     FirstName = "Marco",
                     LastName = "Rietveld",
                     PhoneNumber = "0612345678",
+                    Email = "bvd@student.avans.nl",
                     Address = "Avansstraat 159, 1234AB Breda"
                 });
         dbContext.SaveChanges();

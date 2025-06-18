@@ -1,5 +1,4 @@
 services:
-
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
@@ -13,6 +12,8 @@ services:
       interval: 15s
       timeout: 10s
       retries: 10
+    volumes:
+      - sqlvolume:/var/opt/mssql
 
   customerservice:
     build:
@@ -23,8 +24,19 @@ services:
     ports:
      - "8080:8080"
      - "8081:8081"
-    volumes:
-     - sqlvolume:/var/opt/mssql
+    depends_on:
+      - sqlserver
+    restart: on-failure
+
+  paymentservice:
+    build:
+      context: .
+      dockerfile: PaymentService/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+     - "8082:8080"
+     - "8083:8081"
     depends_on:
       - sqlserver
     restart: on-failure
