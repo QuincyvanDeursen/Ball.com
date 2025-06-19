@@ -6,6 +6,7 @@ namespace PaymentService.Database
     public class PaymentDbContext : DbContext
     {
         public DbSet<Payment> Payments { get; set; }
+        public DbSet<Customer> Customers { get; set; }
 
         public PaymentDbContext(DbContextOptions<PaymentDbContext> options) : base(options)
         {

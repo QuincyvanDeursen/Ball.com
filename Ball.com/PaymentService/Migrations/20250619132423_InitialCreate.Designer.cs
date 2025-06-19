@@ -12,7 +12,7 @@ using PaymentService.Database;
 namespace PaymentService.Migrations
 {
     [DbContext(typeof(PaymentDbContext))]
-    [Migration("20250618130913_InitialCreate")]
+    [Migration("20250619132423_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -24,6 +24,37 @@ namespace PaymentService.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("PaymentService.Domain.Customer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Customers");
+                });
 
             modelBuilder.Entity("PaymentService.Domain.Payment", b =>
                 {
@@ -44,7 +75,7 @@ namespace PaymentService.Migrations
 
             modelBuilder.Entity("PaymentService.Domain.Payment", b =>
                 {
-                    b.OwnsOne("PaymentService.Domain.PaymentCustomer", "Customer", b1 =>
+                    b.OwnsOne("PaymentService.Domain.CustomerSnapshot", "Customer", b1 =>
                         {
                             b1.Property<Guid>("PaymentId")
                                 .HasColumnType("uniqueidentifier");

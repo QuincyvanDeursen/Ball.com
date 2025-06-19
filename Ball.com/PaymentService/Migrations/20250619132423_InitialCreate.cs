@@ -12,6 +12,22 @@ namespace PaymentService.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Customers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Payments",
                 columns: table => new
                 {
@@ -22,8 +38,8 @@ namespace PaymentService.Migrations
                     Customer_FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Customer_LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Customer_PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Customer_Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Customer_Address = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Customer_Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Customer_Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -34,6 +50,9 @@ namespace PaymentService.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Customers");
+
             migrationBuilder.DropTable(
                 name: "Payments");
         }

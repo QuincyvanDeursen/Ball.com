@@ -22,6 +22,37 @@ namespace PaymentService.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("PaymentService.Domain.Customer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Customers");
+                });
+
             modelBuilder.Entity("PaymentService.Domain.Payment", b =>
                 {
                     b.Property<Guid>("Id")
@@ -41,7 +72,7 @@ namespace PaymentService.Migrations
 
             modelBuilder.Entity("PaymentService.Domain.Payment", b =>
                 {
-                    b.OwnsOne("PaymentService.Domain.PaymentCustomer", "Customer", b1 =>
+                    b.OwnsOne("PaymentService.Domain.CustomerSnapshot", "Customer", b1 =>
                         {
                             b1.Property<Guid>("PaymentId")
                                 .HasColumnType("uniqueidentifier");

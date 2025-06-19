@@ -16,6 +16,7 @@ namespace Shared.Infrastructure.Messaging
         private readonly Dictionary<string, Type> _eventTypes = new()
         {
             { "customer.updated", typeof(CustomerUpdatedEvent) },
+            { "customer.created", typeof(CustomerCreatedEvent) },
             // Voeg hier je andere event mappings toe
         };
 

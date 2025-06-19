@@ -34,7 +34,7 @@ public class PaymentService : IPaymentService
         var newPayment = new Payment
         {
             Id = Guid.NewGuid(),
-            TotalPrice = payment.TotalPrice,
+            TotalPrice = (decimal)payment.TotalPrice,
             Status = PaymentStatus.Pending,
             Customer = payment.Customer,
         };

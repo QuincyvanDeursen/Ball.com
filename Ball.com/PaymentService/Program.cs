@@ -16,7 +16,9 @@ builder.Services.AddDbContext<PaymentDbContext>(
 
 // Add services to the container.
 builder.Services.AddScoped<IPaymentRepo, PaymentRepo>();
+builder.Services.AddScoped<ICustomerRepo, CustomerRepo>();
 builder.Services.AddScoped<IPaymentService, PaymentService.Services.PaymentService>();
+
 
 //RabbitMq setup, zie configuration folder.
 builder.Services.AddRabbitMqMessaging(builder.Configuration);
@@ -70,7 +72,7 @@ using (var scope = app.Services.CreateScope())
                 TotalPrice = 99.99m,
                 Status = PaymentStatus.Paid,
 
-                Customer = new Customer
+                Customer = new CustomerSnapshot
                 {
                     Id = Guid.Parse("a1a1a1a1-a1a1-1111-aaaa-111111111111"),
                     FirstName = "Quincy",
@@ -86,7 +88,7 @@ new Payment
     TotalPrice = 49.50m,
     Status = PaymentStatus.Pending,
 
-    Customer = new Customer
+    Customer = new CustomerSnapshot
     {
         Id = Guid.Parse("b2b2b2b2-b2b2-2222-bbbb-222222222222"),
         FirstName = "Bart",
@@ -98,6 +100,31 @@ new Payment
 }
         );
 
+        dbContext.SaveChanges();
+    }
+
+    if (!dbContext.Customers.Any())
+    {
+        dbContext.AddRange(
+                 new Customer
+                 {
+                     Id = Guid.Parse("a1a1a1a1-a1a1-1111-aaaa-111111111111"),
+                     FirstName = "Quincy",
+                     LastName = "van Deursen",
+                     PhoneNumber = "0612345678",
+                     Email = "jvd@student.avans.nl",
+                     Address = "Avansstraat 123, 1234AB Breda"
+                 },
+                 new Customer
+                 {
+                     Id = Guid.Parse("b2b2b2b2-b2b2-2222-bbbb-222222222222"),
+                     FirstName = "Bart",
+                     LastName = "Kroeten",
+                     PhoneNumber = "0612345678",
+                     Email = "qvd@student.avans.nl",
+                     Address = "Avansstraat 456, 1234AB Breda"
+
+                 });
         dbContext.SaveChanges();
     }
 }

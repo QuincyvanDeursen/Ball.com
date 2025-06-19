@@ -1,13 +1,14 @@
 ﻿using PaymentService.Domain;
+using System.Data.SqlTypes;
 
 namespace PaymentService.Dto
 {
     public class PaymentCreateDto
     {
-        public decimal TotalPrice { get; set; }
+        public SqlMoney TotalPrice { get; set; }
         public PaymentStatus Status { get; set; }
 
-        public Customer Customer { get; set; }
+        public CustomerSnapshot Customer { get; set; }
 
     }
 }

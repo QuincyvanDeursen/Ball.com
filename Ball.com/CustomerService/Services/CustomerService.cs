@@ -46,11 +46,25 @@ namespace CustomerService.Services
                 Id = Guid.NewGuid(),
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
+                Email = dto.Email,
                 PhoneNumber = dto.PhoneNumber,
                 Address = dto.Address
             };
 
             await _customerRepo.AddCustomer(customer);
+
+            // Maak event aan en publiceer
+            var customerCreatedEvent = new CustomerCreatedEvent
+            {
+                CustomerId = customer.Id,
+                FirstName = customer.FirstName,
+                LastName = customer.LastName,
+                PhoneNumber = customer.PhoneNumber,
+                Email = customer.Email,
+                Address = customer.Address
+            };
+
+            await _eventPublisher.PublishAsync(customerCreatedEvent);
 
         }
 
