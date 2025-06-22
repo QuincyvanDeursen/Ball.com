@@ -1,20 +1,68 @@
-var builder = WebApplication.CreateBuilder(args);
+using InventoryManagementService.Commands;
+using InventoryManagementService.Commands.Handlers;
+using InventoryManagementService.Data;
+using InventoryManagementService.Models;
+using InventoryManagementService.Queries;
+using InventoryManagementService.Queries.Handlers;
+using InventoryManagementService.Repositories;
+using InventoryManagementService.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
+var builder = WebApplication.CreateBuilder(args);
+// db connection
+var connectionString = builder.Configuration.GetConnectionString("Default");
+builder.Services.AddDbContext<AppDbContext>(
+    options => options.UseSqlServer(connectionString));
 // Add services to the container.
+builder.Services.AddScoped<IEventStore, EventStore>();
+builder.Services.AddScoped<IReadModelUpdater, ReadModelUpdater>();
+builder.Services.AddScoped<IEventReplayer, EventReplayer>();
+
+//Commands
+builder.Services.AddScoped<ICommandHandler<CreateProductCommand>, CreateProductCommandHandler>();
+builder.Services.AddScoped<ICommandHandler<UpdateProductCommand>, UpdateProductCommandHandler>();
+builder.Services.AddScoped<ICommandHandler<UpdateStockCommand>, UpdateStockCommandHandler>();
+
+//Queries
+builder.Services.AddScoped<IQueryHandler<GetAllProductsQuery, IEnumerable<ProductReadModel>>, GetAllProductsQueryHandler>();
+builder.Services.AddScoped<IQueryHandler<GetProductByIdQuery, ProductReadModel?>, GetProductByIdQueryHandler>();
+
+
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+
+
+// Swagger / OpenAPI setup
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "Invetory (Products) API microservice Ball.com",
+        Description = "An ASP.NET Core Web API for managing inventory for Ball.com",
+    });
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
+app.UseCors();
+// Swagger UI inschakelen
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

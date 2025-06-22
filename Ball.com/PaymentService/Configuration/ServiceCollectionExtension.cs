@@ -24,7 +24,7 @@ namespace PaymentService.Configuration
 
             // 3. Event Handlers (scoped)
             services.AddScoped<IEventHandler<CustomerUpdatedEvent>, PaymentCustomerUpdateHandler>();
-            services.AddScoped<IEventHandler<CustomerCreatedEvent>, PaymentCustomerCreateHandler>();
+            services.AddScoped<IEventHandler<CustomerCreatedEvent>, PaymentCustomerCreatedHandler>();
 
             // 4. RabbitMQ Consumer (singleton)
             services.AddSingleton(sp =>

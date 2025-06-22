@@ -5,7 +5,7 @@ using Shared.Infrastructure.Messaging.Events.Interfaces;
 
 namespace PaymentService.Handlers
 {
-    public class PaymentCustomerCreateHandler : IEventHandler<CustomerCreatedEvent>
+    public class PaymentCustomerCreatedHandler : IEventHandler<CustomerCreatedEvent>
     {
 
         // Deze handler luistert naar het CustomerCreatedEvent en maakt een nieuwe klant aan in de PaymentService database.
@@ -16,9 +16,9 @@ namespace PaymentService.Handlers
         // De payment records mogen dus NIET worden aangepast, maar de payment moet wel herleid worden naar de nieuwe klantgegevens.
 
         private readonly ICustomerRepo _repo;
-        private readonly ILogger<PaymentCustomerCreateHandler> _logger;
+        private readonly ILogger<PaymentCustomerCreatedHandler> _logger;
 
-        public PaymentCustomerCreateHandler(ICustomerRepo repo, ILogger<PaymentCustomerCreateHandler> logger)
+        public PaymentCustomerCreatedHandler(ICustomerRepo repo, ILogger<PaymentCustomerCreatedHandler> logger)
         {
             _repo = repo;
             _logger = logger;

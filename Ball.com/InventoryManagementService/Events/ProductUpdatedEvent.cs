@@ -1,0 +1,9 @@
+﻿namespace InventoryManagementService.Events
+{
+    public class ProductUpdatedEvent : ProductEvent
+    {
+        public string Name { get; set; } = null!;
+        public string Description { get; set; } = null!;
+        public decimal Price { get; set; }
+    }
+}
