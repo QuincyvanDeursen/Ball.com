@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Logging;
 using Shared.Infrastructure.Messaging.Events;
 using Shared.Infrastructure.Messaging.Events.Interfaces;
+using Shared.Infrastructure.Messaging.Events.Orders;
+using Shared.Infrastructure.Messaging.Events.Payments;
 using Shared.Infrastructure.Messaging.Interfaces;
 using System.Text.Json;
 
@@ -17,6 +19,10 @@ namespace Shared.Infrastructure.Messaging
         {
             { "customer.updated", typeof(CustomerUpdatedEvent) },
             { "customer.created", typeof(CustomerCreatedEvent) },
+            { "payment.paid", typeof(PaymentPaidEvent) },
+            { "payment.cancelled", typeof(PaymentCancelledEvent) },
+            { "order.placed", typeof(OrderPlacedEvent) },
+            { "order.cancelled", typeof(OrderCancelledEvent) },
             // Voeg hier je andere event mappings toe
         };
 
@@ -40,7 +46,13 @@ namespace Shared.Infrastructure.Messaging
             if (@event == null) return;
 
             var handlerType = typeof(IEventHandler<>).MakeGenericType(eventClrType);
-            var handlers = scope.ServiceProvider.GetServices(handlerType);
+            var handlers = scope.ServiceProvider.GetServices(handlerType).ToList();
+
+            if (handlers.Count == 0)
+            {
+                _logger.LogInformation("Event received but no handlers registered for: {EventType}", eventType);
+                return;
+            }
 
             foreach (var handler in handlers)
             {

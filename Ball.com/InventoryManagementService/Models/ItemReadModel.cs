@@ -1,6 +1,6 @@
 ﻿namespace InventoryManagementService.Models
 {
-    public class ProductReadModel
+    public class ItemReadModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;

@@ -15,16 +15,17 @@ namespace InventoryManagementService.Repositories
             _context = context;
         }
 
-        public async Task SaveAsync(ProductEvent @event)
+        public async Task SaveAsync(ItemDomainEvent @event)
         {
             var type = @event.GetType().Name;
+            var typeWithoutDomainInTheName = type.Replace("Domain", string.Empty);
             var data = JsonSerializer.Serialize(@event, @event.GetType(), _serializerOptions);
 
             var entity = new EventEntity
             {
                 Id = Guid.NewGuid(),
-                AggregateId = @event.ProductId,
-                EventType = type,
+                AggregateId = @event.ItemId,
+                EventType = typeWithoutDomainInTheName,
                 Data = data,
                 Timestamp = @event.Timestamp
             };
@@ -33,7 +34,7 @@ namespace InventoryManagementService.Repositories
             await _context.SaveChangesAsync(); // This line requires the Microsoft.EntityFrameworkCore namespace
         }
 
-        public async Task<List<ProductEvent>> GetEventsAsync(Guid productId)
+        public async Task<List<ItemDomainEvent>> GetEventsAsync(Guid productId)
         {
             var events = await _context.Events
                 .Where(e => e.AggregateId == productId)
@@ -43,7 +44,7 @@ namespace InventoryManagementService.Repositories
             return events.Select(e =>
             {
                 var type = Type.GetType($"InventoryManagementService.Events.{e.EventType}")!;
-                return (ProductEvent)JsonSerializer.Deserialize(e.Data, type, _serializerOptions)!;
+                return (ItemDomainEvent)JsonSerializer.Deserialize(e.Data, type, _serializerOptions)!;
             }).ToList();
         }
     }

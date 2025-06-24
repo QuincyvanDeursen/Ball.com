@@ -2,19 +2,25 @@
 using PaymentService.Dto;
 using PaymentService.Repository.Interfaces;
 using PaymentService.Services.Interfaces;
+using Shared.Infrastructure.Messaging.Events.Payments;
+using Shared.Infrastructure.Messaging.Interfaces;
 
 
 namespace PaymentService.Services;
 public class PaymentService : IPaymentService
 {
     private readonly IPaymentRepo _paymentRepo;
+    private readonly IEventPublisher _eventPublisher;
 
 
     public PaymentService(
-        IPaymentRepo paymentRepo
+        IPaymentRepo paymentRepo,
+        IEventPublisher eventPublisher
+
        )
     {
         _paymentRepo = paymentRepo;
+        _eventPublisher = eventPublisher;
     }
 
 
@@ -57,6 +63,32 @@ public class PaymentService : IPaymentService
 
         // 1.2 Update the payment in the database
         await _paymentRepo.UpdateAsync(oldPayment);
+
+        // 2. Publish an event to notify other services about the payment status change
+        await PublishPaymentEvent(oldPayment, payment.Status);
+
     }
+
+    private async Task PublishPaymentEvent(Payment payment, PaymentStatus status)
+    {
+        if (status == PaymentStatus.Paid)
+        {
+            var paymentPaidEvent = new PaymentPaidEvent
+            {
+                Id = payment.Id,
+                OrderId = payment.OrderId,
+            };
+            await _eventPublisher.PublishAsync(paymentPaidEvent);
+        }
+        else if (status == PaymentStatus.Cancelled)
+        {
+            var paymentCancelledEvent = new PaymentCancelledEvent
+            {
+                Id = payment.Id,
+                OrderId = payment.OrderId,
+            };
+            await _eventPublisher.PublishAsync(paymentCancelledEvent);
+        }
+    }   
 
 }

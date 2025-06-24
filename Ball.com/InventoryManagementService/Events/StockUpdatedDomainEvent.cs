@@ -1,6 +1,6 @@
 ﻿namespace InventoryManagementService.Events
 {
-    public class StockUpdatedEvent : ProductEvent
+    public class StockUpdatedDomainEvent : ItemDomainEvent
     {
         public int Amount { get; set; }
     }

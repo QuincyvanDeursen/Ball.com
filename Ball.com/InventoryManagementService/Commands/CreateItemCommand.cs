@@ -1,7 +1,8 @@
-﻿namespace InventoryManagementService.Events
+﻿namespace InventoryManagementService.Commands
 {
-    public class ProductCreated : ProductEvent
+    public class CreateItemCommand : ICommand
     {
+        public Guid Id { get; set; } = Guid.NewGuid();
         public string Name { get; set; } = null!;
         public string Description { get; set; } = null!;
         public decimal Price { get; set; }

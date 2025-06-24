@@ -1,8 +1,8 @@
 ﻿namespace InventoryManagementService.Events
 {
-    public abstract class ProductEvent
+    public abstract class ItemDomainEvent
     {
-        public Guid ProductId { get; set; }
+        public Guid ItemId { get; set; }
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 
     }

@@ -4,7 +4,7 @@ namespace InventoryManagementService.Repositories
 {
     public interface IEventStore
     {
-        Task SaveAsync(ProductEvent @event);
-        Task<List<ProductEvent>> GetEventsAsync(Guid productId);
+        Task SaveAsync(ItemDomainEvent @event);
+        Task<List<ItemDomainEvent>> GetEventsAsync(Guid productId);
     }
 }

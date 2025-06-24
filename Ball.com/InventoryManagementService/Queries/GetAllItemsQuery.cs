@@ -2,7 +2,7 @@
 
 namespace InventoryManagementService.Queries
 {
-    public class GetAllProductsQuery : IQuery<IEnumerable<ProductReadModel>>
+    public class GetAllItemsQuery : IQuery<IEnumerable<ItemReadModel>>
     {
         // geen properties nodig
     }

@@ -1,14 +1,15 @@
-﻿using Microsoft.Extensions.Options;
-using PaymentService.Handlers;
-using PaymentService.Services;
+﻿using InventoryManagementService.EventHandlers;
+using InventoryManagementService.Services;
+using Microsoft.Extensions.Options;
 using Shared.Infrastructure.Messaging;
 using Shared.Infrastructure.Messaging.Configuration;
 using Shared.Infrastructure.Messaging.Events;
 using Shared.Infrastructure.Messaging.Events.Interfaces;
+using Shared.Infrastructure.Messaging.Events.Items;
 using Shared.Infrastructure.Messaging.Events.Orders;
 using Shared.Infrastructure.Messaging.Interfaces;
 
-namespace PaymentService.Configuration
+namespace InventoryManagementService.Configuration
 {
     public static class ServiceCollectionExtensions
     {
@@ -23,11 +24,15 @@ namespace PaymentService.Configuration
             // 2. Event Dispatcher (singleton)
             services.AddSingleton<IEventDispatcher, EventDispatcher>();
 
+            // Dit moet je toevoegen als je die interface gebruikt!
+            services.AddSingleton<IEventPublisher, RabbitMqEventPublisher>();
+
             // 3. Event Handlers (scoped) dit zijn de events waar naar geluisterd wordt.
-            services.AddScoped<IEventHandler<CustomerUpdatedEvent>, PaymentCustomerUpdateHandler>();
-            services.AddScoped<IEventHandler<CustomerCreatedEvent>, PaymentCustomerCreatedHandler>();
-            services.AddScoped<IEventHandler<OrderPlacedEvent>, PaymentOrderPlacedHandler>();
-            services.AddScoped<IEventHandler<OrderCancelledEvent>, PaymentOrderCancelledHandler>();
+            services.AddScoped<IEventHandler<ItemCreatedEvent>, InventoryItemCreatedEventHandler>();
+            services.AddScoped<IEventHandler<ItemUpdatedEvent>, InventoryItemUpdatedEventHandler>();
+            services.AddScoped<IEventHandler<StockUpdatedEvent>, InventoryStockUpdatedEventHandler>();
+            services.AddScoped<IEventHandler<OrderCancelledEvent>, InventoryOrderCancelledEventHandler>();
+            services.AddScoped<IEventHandler<OrderPlacedEvent>, InventoryOrderPlacedEventHandler>();
 
             // 4. RabbitMQ Consumer (singleton)
             services.AddSingleton<IEventConsumer>(sp =>
@@ -46,5 +51,4 @@ namespace PaymentService.Configuration
             return services;
         }
     }
-
 }

@@ -4,6 +4,6 @@ namespace InventoryManagementService.Services
 {
     public interface IReadModelUpdater
     {
-        Task ApplyAsync(ProductEvent @event);
+        Task ApplyAsync(ItemDomainEvent @event);
     }
 }

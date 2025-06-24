@@ -11,5 +11,7 @@ namespace PaymentService.Repository.Interfaces
         Task UpdateAsync (Payment payment);
 
         Task<IEnumerable<Payment>> GetAllByCustomerId(Guid customerId);
+
+        Task<Payment> GetByOrderId(Guid orderId);
     }
 }

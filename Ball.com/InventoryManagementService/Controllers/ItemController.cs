@@ -8,22 +8,22 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryManagementService.Controllers
 {
-    // Controllers/ProductController.cs
+    // Controllers/ItemController.cs
     [ApiController]
-    [Route("api/products")]
-    public class ProductController : ControllerBase
+    [Route("api/items")]
+    public class ItemController : ControllerBase
     {
-        private readonly ICommandHandler<CreateProductCommand> _createHandler;
+        private readonly ICommandHandler<CreateItemCommand> _createHandler;
         private readonly ICommandHandler<UpdateStockCommand> _updateStockHandler;
-        private readonly IQueryHandler<GetAllProductsQuery, IEnumerable<ProductReadModel>> _getAllHandler;
-        private readonly IQueryHandler<GetProductByIdQuery, ProductReadModel?> _getByIdHandler;
+        private readonly IQueryHandler<GetAllItemsQuery, IEnumerable<ItemReadModel>> _getAllHandler;
+        private readonly IQueryHandler<GetItemsByIdQuery, ItemReadModel?> _getByIdHandler;
         private readonly IEventReplayer _replayer;
 
-        public ProductController(
-            ICommandHandler<CreateProductCommand> createHandler,
+        public ItemController(
+            ICommandHandler<CreateItemCommand> createHandler,
             ICommandHandler<UpdateStockCommand> updateStockHandler,
-            IQueryHandler<GetAllProductsQuery, IEnumerable<ProductReadModel>> getAllHandler,
-            IQueryHandler<GetProductByIdQuery, ProductReadModel?> getByIdHandler,
+            IQueryHandler<GetAllItemsQuery, IEnumerable<ItemReadModel>> getAllHandler,
+            IQueryHandler<GetItemsByIdQuery, ItemReadModel?> getByIdHandler,
             IEventReplayer replayer)
         {
             _createHandler = createHandler;
@@ -34,7 +34,7 @@ namespace InventoryManagementService.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateProductCommand command)
+        public async Task<IActionResult> Create([FromBody] CreateItemCommand command)
         {
             await _createHandler.HandleAsync(command);
             return Ok();
@@ -50,7 +50,7 @@ namespace InventoryManagementService.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var query = new GetAllProductsQuery();
+            var query = new GetAllItemsQuery();
             var products = await _getAllHandler.HandleAsync(query);
             return Ok(products);
         }
@@ -58,7 +58,7 @@ namespace InventoryManagementService.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var query = new GetProductByIdQuery { Id = id };
+            var query = new GetItemsByIdQuery { Id = id };
             var product = await _getByIdHandler.HandleAsync(query);
 
             if (product == null) return NotFound();

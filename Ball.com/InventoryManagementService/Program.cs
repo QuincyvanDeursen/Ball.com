@@ -1,5 +1,6 @@
 using InventoryManagementService.Commands;
 using InventoryManagementService.Commands.Handlers;
+using InventoryManagementService.Configuration;
 using InventoryManagementService.Data;
 using InventoryManagementService.Models;
 using InventoryManagementService.Queries;
@@ -15,18 +16,22 @@ var connectionString = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddDbContext<AppDbContext>(
     options => options.UseSqlServer(connectionString));
 // Add services to the container.
+builder.Services.AddRabbitMqMessaging(builder.Configuration);
+
 builder.Services.AddScoped<IEventStore, EventStore>();
 builder.Services.AddScoped<IReadModelUpdater, ReadModelUpdater>();
 builder.Services.AddScoped<IEventReplayer, EventReplayer>();
 
+
+
 //Commands
-builder.Services.AddScoped<ICommandHandler<CreateProductCommand>, CreateProductCommandHandler>();
-builder.Services.AddScoped<ICommandHandler<UpdateProductCommand>, UpdateProductCommandHandler>();
+builder.Services.AddScoped<ICommandHandler<CreateItemCommand>, CreateItemCommandHandler>();
+builder.Services.AddScoped<ICommandHandler<UpdateItemCommand>, UpdateItemCommandHandler>();
 builder.Services.AddScoped<ICommandHandler<UpdateStockCommand>, UpdateStockCommandHandler>();
 
 //Queries
-builder.Services.AddScoped<IQueryHandler<GetAllProductsQuery, IEnumerable<ProductReadModel>>, GetAllProductsQueryHandler>();
-builder.Services.AddScoped<IQueryHandler<GetProductByIdQuery, ProductReadModel?>, GetProductByIdQueryHandler>();
+builder.Services.AddScoped<IQueryHandler<GetAllItemsQuery, IEnumerable<ItemReadModel>>, GetAllItemsQueryHandler>();
+builder.Services.AddScoped<IQueryHandler<GetItemsByIdQuery, ItemReadModel?>, GetItemsByIdQueryHandler>();
 
 
 

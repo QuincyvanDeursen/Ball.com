@@ -6,12 +6,13 @@ namespace PaymentService.Domain
     public class Payment
     {
         public Guid Id { get; init; }
+        public Guid OrderId { get; set; } // 🔗 reff naar de order
         public decimal TotalPrice { get; set; }
         public PaymentStatus Status { get; set; }
         public CustomerSnapshot Customer { get; set; }
     }
 
-    //Deze customer snapshot is een owned entity, wat betekent dat het geen aparte tabel heeft in de database, maar wordt opgeslagen in de Payment tabel zelf.
+    // Deze customer snapshot is een owned entity, wat betekent dat het geen aparte tabel heeft in de database, maar wordt opgeslagen in de Payment tabel zelf.
     // Dit zorgt ervoor dat payments altijd de informatie bevat over de klant op het moment van betaling.
     // Wijzigingen aan klantgegevens worden niet doorgevoerd in de Payment tabel, omdat dit de integriteit van de data zou kunnen aantasten.
 

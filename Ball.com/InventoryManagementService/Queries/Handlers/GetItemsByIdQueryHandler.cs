@@ -4,16 +4,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InventoryManagementService.Queries.Handlers
 {
-    public class GetProductByIdQueryHandler : IQueryHandler<GetProductByIdQuery, ProductReadModel?>
+    public class GetItemsByIdQueryHandler : IQueryHandler<GetItemsByIdQuery, ItemReadModel?>
     {
         private readonly AppDbContext _context;
 
-        public GetProductByIdQueryHandler(AppDbContext context)
+        public GetItemsByIdQueryHandler(AppDbContext context)
         {
             _context = context;
         }
 
-        public async Task<ProductReadModel?> HandleAsync(GetProductByIdQuery query)
+        public async Task<ItemReadModel?> HandleAsync(GetItemsByIdQuery query)
         {
             return await _context.ProductReadModels
                 .FirstOrDefaultAsync(p => p.Id == query.Id);

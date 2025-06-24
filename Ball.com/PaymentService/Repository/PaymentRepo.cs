@@ -41,5 +41,14 @@ namespace PaymentService.Repository
                 .Where(p => p.Customer.Id == customerId)
                 .ToListAsync();
         }
+
+        public async Task<Payment> GetByOrderId(Guid orderId)
+        {
+            var payment = await context.Payments
+                .Include(p => p.Customer)
+                .FirstOrDefaultAsync(p => p.OrderId == orderId);
+            return payment is null ? throw new InvalidOperationException($"Payment with order id '{orderId}' was not found.") : payment;
+
+        }
     }
 }

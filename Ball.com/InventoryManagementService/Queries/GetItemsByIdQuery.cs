@@ -2,7 +2,7 @@
 
 namespace InventoryManagementService.Queries
 {
-    public class GetProductByIdQuery : IQuery<ProductReadModel>
+    public class GetItemsByIdQuery : IQuery<ItemReadModel>
     {
         public Guid Id { get; set; }
     }

@@ -16,9 +16,9 @@ namespace InventoryManagementService.Commands.Handlers
         }
         public async Task HandleAsync(UpdateStockCommand command)
         {
-            var @event = new StockUpdatedEvent
+            var @event = new StockUpdatedDomainEvent
             {
-                ProductId = command.ProductId,
+                ItemId = command.ProductId,
                 Amount = command.Amount,
                 Timestamp = DateTime.UtcNow
             };

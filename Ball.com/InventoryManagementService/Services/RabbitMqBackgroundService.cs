@@ -1,7 +1,6 @@
-﻿using Shared.Infrastructure.Messaging;
-using Shared.Infrastructure.Messaging.Interfaces;
+﻿using Shared.Infrastructure.Messaging.Interfaces;
 
-namespace PaymentService.Services
+namespace InventoryManagementService.Services
 {
     public class RabbitMqBackgroundService : BackgroundService, IAsyncDisposable
     {

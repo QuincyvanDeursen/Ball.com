@@ -1,6 +1,6 @@
 ﻿namespace InventoryManagementService.Events
 {
-    public class ProductUpdatedEvent : ProductEvent
+    public class ItemUpdatedDomainEvent : ItemDomainEvent
     {
         public string Name { get; set; } = null!;
         public string Description { get; set; } = null!;
