@@ -18,7 +18,7 @@ namespace InventoryManagementService.Commands.Handlers
         {
             var @event = new ItemUpdatedDomainEvent
             {
-                ItemId = command.ProductId,
+                ItemId = command.ItemId,
                 Name = command.Name,
                 Description = command.Description,
                 Price = command.Price,
@@ -28,7 +28,7 @@ namespace InventoryManagementService.Commands.Handlers
 
             var itemUpdatedEvent = new ItemUpdatedEvent
             {
-                Id = command.ProductId,
+                Id = command.ItemId,
                 Name = command.Name,
                 Description = command.Description,
                 Price = command.Price

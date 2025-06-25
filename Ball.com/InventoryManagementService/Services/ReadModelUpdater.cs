@@ -18,7 +18,7 @@ namespace InventoryManagementService.Services
             switch (@event)
             {
                 case ItemCreatedDomainEvent e:
-                    _context.ProductReadModels.Add(new ItemReadModel
+                    _context.ItemReadModels.Add(new ItemReadModel
                     {
                         Id = e.ItemId,
                         Name = e.Name,
@@ -29,11 +29,11 @@ namespace InventoryManagementService.Services
                     break;
 
                 case StockUpdatedDomainEvent e:
-                    var product = await _context.ProductReadModels.FindAsync(e.ItemId);
+                    var product = await _context.ItemReadModels.FindAsync(e.ItemId);
                     if (product != null) product.Stock += e.Amount;
                     break;
                 case ItemUpdatedDomainEvent e:
-                    var updatedProduct = await _context.ProductReadModels.FindAsync(e.ItemId);
+                    var updatedProduct = await _context.ItemReadModels.FindAsync(e.ItemId);
                     if (updatedProduct != null)
                     {
                         updatedProduct.Name = e.Name;

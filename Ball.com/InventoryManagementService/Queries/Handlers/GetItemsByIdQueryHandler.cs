@@ -15,7 +15,7 @@ namespace InventoryManagementService.Queries.Handlers
 
         public async Task<ItemReadModel?> HandleAsync(GetItemsByIdQuery query)
         {
-            return await _context.ProductReadModels
+            return await _context.ItemReadModels
                 .FirstOrDefaultAsync(p => p.Id == query.Id);
         }
     }

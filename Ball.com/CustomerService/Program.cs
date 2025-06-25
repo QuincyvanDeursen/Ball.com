@@ -34,12 +34,6 @@ builder.Services.AddSwaggerGen(options =>
         Title = "Customer API microservice Ball.com",
         Description = "An ASP.NET Core Web API for managing customers for Ball.com",
     });
-
-    // Optioneel: XML comments toevoegen als je die hebt
-    /*
-    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-    */
 });
 
 builder.Services.AddCors(options =>

@@ -29,6 +29,8 @@ namespace InventoryManagementService.Commands.Handlers
                 Stock = command.InitialStock
             };
 
+            await _eventStore.SaveAsync(@event);
+
             // Create a new item instance and apply the event to it
             var item = new ItemCreatedEvent
             {
@@ -40,7 +42,7 @@ namespace InventoryManagementService.Commands.Handlers
             };
 
 
-            await _eventStore.SaveAsync(@event);
+
             await _publisher.PublishAsync(item);
         }
     }

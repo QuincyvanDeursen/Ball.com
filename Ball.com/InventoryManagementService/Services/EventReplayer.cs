@@ -20,7 +20,7 @@ namespace InventoryManagementService.Services
         public async Task ReplayAsync()
         {
             // 1. Wis de bestaande readmodels
-            _context.ProductReadModels.RemoveRange(_context.ProductReadModels);
+            _context.ItemReadModels.RemoveRange(_context.ItemReadModels);
             await _context.SaveChangesAsync();
 
             // 2. Vind unieke aggregate roots (Product IDs)

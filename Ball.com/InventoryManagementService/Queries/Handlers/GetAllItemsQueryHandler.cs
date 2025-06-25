@@ -15,7 +15,7 @@ namespace InventoryManagementService.Queries.Handlers
 
         public async Task<IEnumerable<ItemReadModel>> HandleAsync(GetAllItemsQuery query)
         {
-            return await _context.ProductReadModels.ToListAsync();
+            return await _context.ItemReadModels.ToListAsync();
         }
     }
 }

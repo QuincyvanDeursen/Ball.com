@@ -84,7 +84,8 @@ namespace CustomerService.Services
             {
                 CustomerId = customer.Id,
                 PhoneNumber = customer.PhoneNumber,
-                Email = customer.Email
+                Email = customer.Email,
+                Address = customer.Address
             };
 
             await _eventPublisher.PublishAsync(customerUpdatedEvent);

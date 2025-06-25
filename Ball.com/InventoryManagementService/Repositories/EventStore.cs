@@ -18,14 +18,13 @@ namespace InventoryManagementService.Repositories
         public async Task SaveAsync(ItemDomainEvent @event)
         {
             var type = @event.GetType().Name;
-            var typeWithoutDomainInTheName = type.Replace("Domain", string.Empty);
             var data = JsonSerializer.Serialize(@event, @event.GetType(), _serializerOptions);
 
             var entity = new EventEntity
             {
                 Id = Guid.NewGuid(),
                 AggregateId = @event.ItemId,
-                EventType = typeWithoutDomainInTheName,
+                EventType = type,
                 Data = data,
                 Timestamp = @event.Timestamp
             };

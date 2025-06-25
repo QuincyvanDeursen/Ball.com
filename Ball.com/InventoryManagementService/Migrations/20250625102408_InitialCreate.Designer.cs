@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InventoryManagementService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250621191501_InitialCreate")]
+    [Migration("20250625102408_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -50,7 +50,7 @@ namespace InventoryManagementService.Migrations
                     b.ToTable("Events");
                 });
 
-            modelBuilder.Entity("InventoryManagementService.Models.ProductReadModel", b =>
+            modelBuilder.Entity("InventoryManagementService.Models.ItemReadModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -72,7 +72,7 @@ namespace InventoryManagementService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductReadModels");
+                    b.ToTable("ItemReadModels");
                 });
 #pragma warning restore 612, 618
         }

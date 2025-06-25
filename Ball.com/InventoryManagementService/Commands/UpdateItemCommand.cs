@@ -2,13 +2,13 @@
 {
     public class UpdateItemCommand : ICommand
     {
-        public Guid ProductId { get; set; }
+        public Guid ItemId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
-        public UpdateItemCommand(Guid productId, string name, string description, decimal price)
+        public UpdateItemCommand(Guid itemId, string name, string description, decimal price)
         {
-            ProductId = productId;
+            ItemId = itemId;
             Name = name;
             Description = description;
             Price = price;

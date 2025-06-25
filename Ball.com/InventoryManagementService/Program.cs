@@ -70,6 +70,73 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthorization();
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate();
+
+    if (!dbContext.ItemReadModels.Any())
+    {
+        dbContext.AddRange(
+                            new ItemReadModel
+                            {
+                                Id = Guid.Parse("1a1a1a1a-1a1a-1111-aaaa-111111111111"),
+                                Name = "Laptop",
+                                Description = "High performance laptop",
+                                Price = 1200.00m,
+                                Stock = 50
+                            },
+                            new ItemReadModel
+                            {
+                                Id = Guid.Parse("2b2b2b2b-2b2b-2222-bbbb-222222222222"),
+                                Name = "Smartphone",
+                                Description = "Latest model smartphone",
+                                Price = 800.00m,
+                                Stock = 100
+                            },
+                            new ItemReadModel
+                            {
+                                Id = Guid.Parse("3c3c3c3c-3c3c-3333-cccc-333333333333"),
+                                Name = "Headphones",
+                                Description = "Noise-cancelling headphones",
+                                Price = 200.00m,
+                                Stock = 75
+                            });
+
+        dbContext.SaveChanges();
+    }
+
+    if (!dbContext.Events.Any())
+    {
+        // Replay events to populate the read model
+        dbContext.AddRange(
+            new EventEntity
+            {
+                Id = Guid.NewGuid(),
+                AggregateId = Guid.Parse("1a1a1a1a-1a1a-1111-aaaa-111111111111"),
+                EventType = "ItemCreatedDomainEvent",
+                Data = "{\"ItemId\":\"1a1a1a1a-1a1a-1111-aaaa-111111111111\",\"Name\":\"Laptop\",\"Description\":\"High performance laptop\",\"Price\":1200.00,\"Stock\":50}",
+                Timestamp = DateTime.UtcNow
+            },
+            new EventEntity
+            {
+                Id = Guid.NewGuid(),
+                AggregateId = Guid.Parse("2b2b2b2b-2b2b-2222-bbbb-222222222222"),
+                EventType = "ItemCreatedDomainEvent",
+                Data = "{\"ItemId\":\"2b2b2b2b-2b2b-2222-bbbb-222222222222\",\"Name\":\"Smartphone\",\"Description\":\"Latest model smartphone\",\"Price\":800.00,\"Stock\":100}",
+                Timestamp = DateTime.UtcNow
+            },
+            new EventEntity
+            {
+                Id = Guid.NewGuid(),
+                AggregateId = Guid.Parse("3c3c3c3c-3c3c-3333-cccc-333333333333"),
+                EventType = "ItemCreatedDomainEvent",
+                Data = "{\"ItemId\":\"3c3c3c3c-3c3c-3333-cccc-333333333333\",\"Name\":\"Headphones\",\"Description\":\"Noise-cancelling headphones\",\"Price\":200.00,\"Stock\":75}",
+                Timestamp = DateTime.UtcNow
+            });
+        dbContext.SaveChanges();
+    }
+}
 
 app.MapControllers();
 

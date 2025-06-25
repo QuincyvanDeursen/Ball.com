@@ -22,6 +22,7 @@ namespace PaymentService.Configuration
 
             // 2. Event Dispatcher (singleton)
             services.AddSingleton<IEventDispatcher, EventDispatcher>();
+            services.AddSingleton<IEventPublisher, RabbitMqEventPublisher>();
 
             // 3. Event Handlers (scoped) dit zijn de events waar naar geluisterd wordt.
             services.AddScoped<IEventHandler<CustomerUpdatedEvent>, PaymentCustomerUpdateHandler>();

@@ -2,7 +2,7 @@
 {
     public class ItemCreatedEvent : BaseEvent
     {
-        public override string EventType => "Item.Created";
+        public override string EventType => "item.created";
         public Guid ItemId { get; set; }
         public string Name { get; set; } = null!;
         public string Description { get; set; } = null!;

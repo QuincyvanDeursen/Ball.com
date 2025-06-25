@@ -47,7 +47,7 @@ namespace InventoryManagementService.Migrations
                     b.ToTable("Events");
                 });
 
-            modelBuilder.Entity("InventoryManagementService.Models.ProductReadModel", b =>
+            modelBuilder.Entity("InventoryManagementService.Models.ItemReadModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -69,7 +69,7 @@ namespace InventoryManagementService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductReadModels");
+                    b.ToTable("ItemReadModels");
                 });
 #pragma warning restore 612, 618
         }

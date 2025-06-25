@@ -27,7 +27,7 @@ namespace InventoryManagementService.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductReadModels",
+                name: "ItemReadModels",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -38,7 +38,7 @@ namespace InventoryManagementService.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductReadModels", x => x.Id);
+                    table.PrimaryKey("PK_ItemReadModels", x => x.Id);
                 });
         }
 
@@ -49,7 +49,7 @@ namespace InventoryManagementService.Migrations
                 name: "Events");
 
             migrationBuilder.DropTable(
-                name: "ProductReadModels");
+                name: "ItemReadModels");
         }
     }
 }

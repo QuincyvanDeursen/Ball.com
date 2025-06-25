@@ -2,11 +2,11 @@
 {
     public class UpdateStockCommand : ICommand
     {
-        public Guid ProductId { get; set; }
+        public Guid ItemId { get; set; }
         public int Amount { get; set; }
-        public UpdateStockCommand(Guid productId, int amount)
+        public UpdateStockCommand(Guid itemId, int amount)
         {
-            ProductId = productId;
+            ItemId = itemId;
             Amount = amount;
         }
     }

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Shared.Infrastructure.Messaging.Events;
 using Shared.Infrastructure.Messaging.Events.Interfaces;
+using Shared.Infrastructure.Messaging.Events.Items;
 using Shared.Infrastructure.Messaging.Events.Orders;
 using Shared.Infrastructure.Messaging.Events.Payments;
 using Shared.Infrastructure.Messaging.Interfaces;
@@ -23,6 +24,9 @@ namespace Shared.Infrastructure.Messaging
             { "payment.cancelled", typeof(PaymentCancelledEvent) },
             { "order.placed", typeof(OrderPlacedEvent) },
             { "order.cancelled", typeof(OrderCancelledEvent) },
+            { "item.created", typeof(ItemCreatedEvent) },
+            { "item.updated", typeof(ItemUpdatedEvent) },
+            { "stock.updated", typeof(StockUpdatedEvent) },
             // Voeg hier je andere event mappings toe
         };
 

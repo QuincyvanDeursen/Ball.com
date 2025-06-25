@@ -14,6 +14,7 @@ namespace InventoryManagementService.Controllers
     public class ItemController : ControllerBase
     {
         private readonly ICommandHandler<CreateItemCommand> _createHandler;
+        private readonly ICommandHandler<UpdateItemCommand> _updateHandler;
         private readonly ICommandHandler<UpdateStockCommand> _updateStockHandler;
         private readonly IQueryHandler<GetAllItemsQuery, IEnumerable<ItemReadModel>> _getAllHandler;
         private readonly IQueryHandler<GetItemsByIdQuery, ItemReadModel?> _getByIdHandler;
@@ -21,9 +22,11 @@ namespace InventoryManagementService.Controllers
 
         public ItemController(
             ICommandHandler<CreateItemCommand> createHandler,
+            ICommandHandler<UpdateItemCommand> updateHandler,
             ICommandHandler<UpdateStockCommand> updateStockHandler,
             IQueryHandler<GetAllItemsQuery, IEnumerable<ItemReadModel>> getAllHandler,
             IQueryHandler<GetItemsByIdQuery, ItemReadModel?> getByIdHandler,
+
             IEventReplayer replayer)
         {
             _createHandler = createHandler;
@@ -34,9 +37,17 @@ namespace InventoryManagementService.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateItemCommand command)
+        public async Task<IActionResult> Create(CreateItemCommand command)
         {
             await _createHandler.HandleAsync(command);
+            return Ok();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] UpdateItemCommand command)
+        {
+
+            await _updateHandler.HandleAsync(command);
             return Ok();
         }
 
