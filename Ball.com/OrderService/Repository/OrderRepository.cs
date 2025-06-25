@@ -39,14 +39,14 @@ namespace OrderService.Repository
 			return await _context.Orders.Include(o => o.OrderItems).FirstOrDefaultAsync(o => o.OrderId == id) ?? throw new KeyNotFoundException($"order with ID {id} not found.");
 		}
 
-		public Task UpdateAsync(Order order)
+		public async Task UpdateAsync(Order order)
 		{
 			if (order == null)
 			{
 				throw new ArgumentNullException(nameof(order));
 			}
 			_context.Orders.Update(order);
-			return _context.SaveChangesAsync();
+			await _context.SaveChangesAsync();
 		}
 	}
 }

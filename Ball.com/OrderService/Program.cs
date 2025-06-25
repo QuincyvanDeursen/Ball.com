@@ -1,6 +1,7 @@
 using ItemService.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using OrderService.Configuration;
 using OrderService.Database;
 using OrderService.Domain;
 using OrderService.Repository;
@@ -25,7 +26,8 @@ builder.Services.AddScoped<IOrderService, OrderService.Services.OrderService>();
 
 builder.Services.AddControllers();
 
-
+//RabbitMq setup, zie configuration folder.
+builder.Services.AddRabbitMqMessaging(builder.Configuration);
 
 // Swagger / OpenAPI setup
 builder.Services.AddEndpointsApiExplorer();

@@ -38,14 +38,14 @@ namespace PaymentService.Repository
             return await _context.Customers.FindAsync(id) ?? throw new KeyNotFoundException($"Customer with ID {id} not found.");
         }
 
-        public Task UpdateAsync(Customer customer)
+        public async Task UpdateAsync(Customer customer)
         {   
             if (customer == null)
             {
                 throw new ArgumentNullException(nameof(customer));
             }
             _context.Customers.Update(customer);
-            return _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
     }
 }

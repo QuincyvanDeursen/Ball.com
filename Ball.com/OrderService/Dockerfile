@@ -13,6 +13,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["OrderService/OrderService.csproj", "OrderService/"]
+COPY ["Shared.Infrastructure/Shared.Infrastructure.csproj", "Shared.Infrastructure/"]
 RUN dotnet restore "./OrderService/OrderService.csproj"
 COPY . .
 WORKDIR "/src/OrderService"

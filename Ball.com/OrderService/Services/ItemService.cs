@@ -1,4 +1,5 @@
 ﻿using OrderService.Domain;
+using OrderService.Dto;
 using OrderService.Repository.Interfaces;
 using OrderService.Services.Interfaces;
 
@@ -11,9 +12,37 @@ namespace OrderService.Services
 		{
 			_itemRepository = itemRepository;
 		}
+
+		public async Task Create(ItemCreateDto itemDto)
+		{
+			var item = new Item
+			{
+				ItemId = itemDto.ItemId,
+				Name = itemDto.Name,
+				Price = itemDto.Price,
+				Stock = itemDto.Stock,
+			};
+			await _itemRepository.CreateAsync(item);
+		}
+
 		public async Task<Item> Get(Guid id)
 		{
 			return await _itemRepository.GetByIdAsync(id);
+		}
+
+		public async Task Update(ItemUpdateDto itemDto)
+		{
+			var olditem = await _itemRepository.GetByIdAsync(itemDto.ItemId);
+			if (olditem == null) throw new KeyNotFoundException($"Item with ID {itemDto.ItemId} not found");
+			var item = new Item
+			{
+				ItemId = itemDto.ItemId,
+				Name = itemDto.Name,
+				Price = itemDto.Price,
+				Stock = olditem.Stock,
+			};
+			await _itemRepository.UpdateAsync(item);
+			
 		}
 	}
 }
