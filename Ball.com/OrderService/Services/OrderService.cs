@@ -39,9 +39,11 @@ namespace OrderService.Services
 			};
 
 			var totalPrice = (decimal) 0;
-			foreach (var item in order.OrderItems)
-			{
-				totalPrice += await GetSnapshotPrice(item.ItemId) * item.Quantity;
+			for (int i = 0; i < order.OrderItems.Count; i++) {
+				var item = order.OrderItems[i];
+				var price = await GetSnapshotPrice(item.ItemId);
+				item.SnapshotPrice = price;
+				totalPrice += price * item.Quantity;
 			}
 			order.TotalPrice = totalPrice;
 
