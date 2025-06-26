@@ -2,8 +2,6 @@
 using OrderService.Services.Interfaces;
 using Shared.Infrastructure.Messaging.Events;
 using Shared.Infrastructure.Messaging.Events.Interfaces;
-using Shared.Infrastructure.Messaging.Events.Items;
-
 namespace OrderService.Handlers
 {
 	public class CustomerCreatedHandler : IEventHandler<CustomerCreatedEvent>
