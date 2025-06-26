@@ -3,10 +3,11 @@ using OrderService.Dto;
 using OrderService.Services.Interfaces;
 using Shared.Infrastructure.Messaging.Events.Interfaces;
 using Shared.Infrastructure.Messaging.Events.Orders;
+using Shared.Infrastructure.Messaging.Events.Payments;
 
 namespace OrderService.Handlers
 {
-	public class PaymentCancelledHandler : IEventHandler<OrderCancelledEvent>
+	public class PaymentCancelledHandler : IEventHandler<PaymentCancelledEvent>
 	{
 		private readonly ILogger<PaymentCancelledHandler> _logger;
 		private readonly IOrderService _orderService;
@@ -15,7 +16,7 @@ namespace OrderService.Handlers
 			_logger = logger;
 			_orderService = orderService;
 		}
-		public async Task HandleAsync(OrderCancelledEvent @event)
+		public async Task HandleAsync(PaymentCancelledEvent @event)
 		{
 			_logger.LogInformation("Handling PaymentCancelled event for OrderId: {OrderId}", @event.OrderId);
 
@@ -33,9 +34,10 @@ namespace OrderService.Handlers
 			{
 				OrderId = @event.OrderId,
 				PaymentStatus = PaymentStatus.Cancelled,
+				OrderStatus	= OrderStatus.Cancelled,
 			};
 			await _orderService.Update(orderUpdateDto);
-			_logger.LogInformation("Payment cancelled successfully for OrderId: {OrderId}", @event.OrderId);
+			_logger.LogInformation("Payment and Order cancelled successfully for OrderId: {OrderId}", @event.OrderId);
 
 		}
 	}
