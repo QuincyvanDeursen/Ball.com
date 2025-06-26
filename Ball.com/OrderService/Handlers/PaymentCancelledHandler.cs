@@ -36,8 +36,6 @@ namespace OrderService.Handlers
 			};
 			await _orderService.Update(orderUpdateDto);
 			_logger.LogInformation("Payment cancelled successfully for OrderId: {OrderId}", @event.OrderId);
-			await _orderService.Cancel(orderUpdateDto.OrderId);
-			_logger.LogInformation("Order cancelled successfully for OrderId: {OrderId}", @event.OrderId);
 
 		}
 	}
