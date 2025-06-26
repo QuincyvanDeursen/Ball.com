@@ -11,15 +11,15 @@ namespace InventoryManagementService.EventHandlers
         private readonly IReadModelUpdater _readModelUpdater;
         public InventoryItemCreatedEventHandler(ILogger<InventoryItemCreatedEventHandler> logger, IReadModelUpdater readModelUpdater)
         {
-            _logger = logger;
-            _readModelUpdater = readModelUpdater;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _readModelUpdater = readModelUpdater ?? throw new ArgumentNullException(nameof(readModelUpdater));
         }
-
 
         public async Task HandleAsync(ItemCreatedEvent @event)
         {
+            _logger.LogInformation("Received ItemCreatedEvent from the message broker");
 
-            _logger.LogInformation("Handling ItemCreatedEvent for ProductId: {ProductId}", @event.ItemId);
+            //creating a new ItemCreatedDomainEvent to update the read model
             var itemDomainEvent = new ItemCreatedDomainEvent
             {
                 ItemId = @event.ItemId,
@@ -28,7 +28,8 @@ namespace InventoryManagementService.EventHandlers
                 Price = @event.Price,
                 Stock = @event.Stock
             };
-            // Update the read model with the new item details
+
+            // Create the read model using the read model updater service
             await _readModelUpdater.ApplyAsync(itemDomainEvent);
         }
     }

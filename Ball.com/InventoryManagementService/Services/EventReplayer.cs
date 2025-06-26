@@ -12,32 +12,28 @@ namespace InventoryManagementService.Services
 
         public EventReplayer(AppDbContext context, IEventStore eventStore, IReadModelUpdater updater)
         {
-            _context = context;
-            _eventStore = eventStore;
-            _updater = updater;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _eventStore = eventStore ?? throw new ArgumentNullException(nameof(eventStore));
+            _updater = updater ?? throw new ArgumentNullException(nameof(updater));
         }
 
         public async Task ReplayAsync()
         {
-            // 1. Wis de bestaande readmodels
+            // 1. Leeg de bestaande read models
             _context.ItemReadModels.RemoveRange(_context.ItemReadModels);
             await _context.SaveChangesAsync();
 
-            // 2. Vind unieke aggregate roots (Product IDs)
+            // 2. Haal unieke aggregateIds op
             var aggregateIds = await _context.Events
                 .Select(e => e.AggregateId)
                 .Distinct()
                 .ToListAsync();
 
-            // 3. Reconstructie per aggregate
+            // 3. Haal events op per aggregate en bouw + sla het readmodel op
             foreach (var aggregateId in aggregateIds)
             {
                 var events = await _eventStore.GetEventsAsync(aggregateId);
-
-                foreach (var @event in events.OrderBy(e => e.Timestamp))
-                {
-                    await _updater.ApplyAsync(@event);
-                }
+                await _updater.RestoreAndSave(events);
             }
         }
     }

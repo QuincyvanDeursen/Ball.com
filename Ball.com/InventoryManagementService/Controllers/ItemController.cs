@@ -17,7 +17,7 @@ namespace InventoryManagementService.Controllers
         private readonly ICommandHandler<UpdateItemCommand> _updateHandler;
         private readonly ICommandHandler<UpdateStockCommand> _updateStockHandler;
         private readonly IQueryHandler<GetAllItemsQuery, IEnumerable<ItemReadModel>> _getAllHandler;
-        private readonly IQueryHandler<GetItemsByIdQuery, ItemReadModel?> _getByIdHandler;
+        private readonly IQueryHandler<GetItemsByIdQuery, ItemReadModel> _getByIdHandler;
         private readonly IEventReplayer _replayer;
 
         public ItemController(
@@ -25,62 +25,118 @@ namespace InventoryManagementService.Controllers
             ICommandHandler<UpdateItemCommand> updateHandler,
             ICommandHandler<UpdateStockCommand> updateStockHandler,
             IQueryHandler<GetAllItemsQuery, IEnumerable<ItemReadModel>> getAllHandler,
-            IQueryHandler<GetItemsByIdQuery, ItemReadModel?> getByIdHandler,
-
+            IQueryHandler<GetItemsByIdQuery, ItemReadModel> getByIdHandler,
             IEventReplayer replayer)
         {
-            _createHandler = createHandler;
-            _updateStockHandler = updateStockHandler;
-            _getAllHandler = getAllHandler;
-            _getByIdHandler = getByIdHandler;
-            _replayer = replayer;
+            _createHandler = createHandler ?? throw new ArgumentNullException(nameof(createHandler));
+            _updateStockHandler = updateStockHandler ?? throw new ArgumentNullException(nameof(updateStockHandler));
+            _getAllHandler = getAllHandler ?? throw new ArgumentNullException(nameof(getAllHandler));
+            _getByIdHandler = getByIdHandler ?? throw new ArgumentNullException(nameof(getByIdHandler));
+            _replayer = replayer ?? throw new ArgumentNullException(nameof(replayer));
+            _updateHandler = updateHandler ?? throw new ArgumentNullException(nameof(updateHandler));
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(CreateItemCommand command)
         {
-            await _createHandler.HandleAsync(command);
-            return Ok();
+            try
+            {
+                if (command == null) return BadRequest("Command cannot be null.");
+                if (string.IsNullOrWhiteSpace(command.Name)) return BadRequest("Item name is required.");
+                if (string.IsNullOrWhiteSpace(command.Description)) return BadRequest("Description is required.");
+                if (command.Price <= 0) return BadRequest("Item price must be greater than zero.");
+                if (command.InitialStock < 0) return BadRequest("Initial stock cannot be negative.");
+                await _createHandler.HandleAsync(command);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error processing command: {ex.Message}");
+            }
         }
 
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] UpdateItemCommand command)
         {
-
-            await _updateHandler.HandleAsync(command);
-            return Ok();
+            try
+            {
+                if (command == null) return BadRequest("Command cannot be null.");
+                if (command.ItemId == Guid.Empty) return BadRequest("Item ID is required.");
+                if (string.IsNullOrWhiteSpace(command.Name)) return BadRequest("Item name is required.");
+                if (string.IsNullOrWhiteSpace(command.Description)) return BadRequest("Description is required.");
+                if (command.Price <= 0 && command.Price != null) return BadRequest("Item price must be greater than zero.");
+                await _updateHandler.HandleAsync(command);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error processing command: {ex.Message}");
+            }
         }
 
         [HttpPost("stock")]
         public async Task<IActionResult> UpdateStock([FromBody] UpdateStockCommand command)
         {
-            await _updateStockHandler.HandleAsync(command);
-            return Ok();
+            try
+            {
+                if (command == null) return BadRequest("Command cannot be null.");
+                if (command.ItemId == Guid.Empty) return BadRequest("Item ID is required.");
+                await _updateStockHandler.HandleAsync(command);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error processing command: {ex.Message}");
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var query = new GetAllItemsQuery();
-            var products = await _getAllHandler.HandleAsync(query);
-            return Ok(products);
+            try
+            {
+                var query = new GetAllItemsQuery();
+                var products = await _getAllHandler.HandleAsync(query);
+                return Ok(products);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error retrieving items: {ex.Message}");
+
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var query = new GetItemsByIdQuery { Id = id };
-            var product = await _getByIdHandler.HandleAsync(query);
+            try
+            {
 
-            if (product == null) return NotFound();
-            return Ok(product);
+                if (id == Guid.Empty) return BadRequest("Item ID is required.");
+                var query = new GetItemsByIdQuery { Id = id };
+                var product = await _getByIdHandler.HandleAsync(query);
+                if (product == null) return NotFound();
+                return Ok(product);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error processing request: {ex.Message}");
+
+            }
         }
 
         [HttpPost("replay")]
         public async Task<IActionResult> Replay()
         {
-            await _replayer.ReplayAsync();
-            return Ok("Replay completed.");
+            try
+            {
+                await _replayer.ReplayAsync();
+                return Ok("Replay completed.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error during replay: {ex.Message}");
+            }
         }
     }
 }

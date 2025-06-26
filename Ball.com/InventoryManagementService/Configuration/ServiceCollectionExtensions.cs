@@ -1,9 +1,8 @@
 ﻿using InventoryManagementService.EventHandlers;
-using InventoryManagementService.Services;
 using Microsoft.Extensions.Options;
 using Shared.Infrastructure.Messaging;
+using Shared.Infrastructure.Messaging.BackGroundService;
 using Shared.Infrastructure.Messaging.Configuration;
-using Shared.Infrastructure.Messaging.Events;
 using Shared.Infrastructure.Messaging.Events.Interfaces;
 using Shared.Infrastructure.Messaging.Events.Items;
 using Shared.Infrastructure.Messaging.Events.Orders;
@@ -24,7 +23,7 @@ namespace InventoryManagementService.Configuration
             // 2. Event Dispatcher (singleton)
             services.AddSingleton<IEventDispatcher, EventDispatcher>();
 
-            // Dit moet je toevoegen als je die interface gebruikt!
+            // 3. Event Publisher (singleton)
             services.AddSingleton<IEventPublisher, RabbitMqEventPublisher>();
 
             // 3. Event Handlers (scoped) dit zijn de events waar naar geluisterd wordt.
@@ -45,7 +44,7 @@ namespace InventoryManagementService.Configuration
                 return new RabbitMqEventConsumer(factory, dispatcher, logger, settings.ServiceName);
             });
 
-            // 5. BackgroundService die de consumer draait
+            // 5. BackgroundService die de consumer aanroept.
             services.AddHostedService<RabbitMqBackgroundService>();
 
             return services;

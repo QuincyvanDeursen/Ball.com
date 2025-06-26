@@ -15,35 +15,48 @@ namespace InventoryManagementService.Services
 
         public async Task ApplyAsync(ItemDomainEvent @event)
         {
-            switch (@event)
-            {
-                case ItemCreatedDomainEvent e:
-                    _context.ItemReadModels.Add(new ItemReadModel
-                    {
-                        Id = e.ItemId,
-                        Name = e.Name,
-                        Description = e.Description,
-                        Price = e.Price,
-                        Stock = e.Stock
-                    });
-                    break;
+            ItemReadModel? readModel;
 
-                case StockUpdatedDomainEvent e:
-                    var product = await _context.ItemReadModels.FindAsync(e.ItemId);
-                    if (product != null) product.Stock += e.Amount;
-                    break;
-                case ItemUpdatedDomainEvent e:
-                    var updatedProduct = await _context.ItemReadModels.FindAsync(e.ItemId);
-                    if (updatedProduct != null)
-                    {
-                        updatedProduct.Name = e.Name;
-                        updatedProduct.Description = e.Description;
-                        updatedProduct.Price = e.Price;
-                    }
-                    break;
+            if (@event is ItemCreatedDomainEvent)
+            {
+                // Nieuw model opbouwen
+                readModel = new ItemReadModel();
+                readModel.Apply(@event);
+                _context.ItemReadModels.Add(readModel);
+            }
+            else
+            {
+                // Bestaand model ophalen en bijwerken
+                readModel = await _context.ItemReadModels.FindAsync(@event.ItemId);
+                if (readModel == null)
+                {
+                    throw new InvalidOperationException($"Read model not found for item with ID '{@event.ItemId}'");
+                }
+
+                readModel.Apply(@event);
             }
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<ItemReadModel> RestoreAndSave(IEnumerable<ItemDomainEvent> events)
+        {
+            var readModel = new ItemReadModel();
+
+            foreach (var @event in events.OrderBy(e => e.Timestamp))
+            {
+                readModel.Apply(@event);
+            }
+
+            if (readModel.Id == Guid.Empty)
+            {
+                throw new InvalidOperationException("ItemCreatedDomainEvent is required to initialize the read model.");
+            }
+
+            _context.ItemReadModels.Add(readModel);
+            await _context.SaveChangesAsync();
+
+            return readModel;
         }
     }
 }

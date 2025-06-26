@@ -1,6 +1,7 @@
-﻿using Shared.Infrastructure.Messaging.Interfaces;
+﻿using Microsoft.Extensions.Hosting;
+using Shared.Infrastructure.Messaging.Interfaces;
 
-namespace InventoryManagementService.Services
+namespace  Shared.Infrastructure.Messaging.BackGroundService
 {
     public class RabbitMqBackgroundService : BackgroundService, IAsyncDisposable
     {
@@ -8,7 +9,7 @@ namespace InventoryManagementService.Services
 
         public RabbitMqBackgroundService(IEventConsumer consumer)
         {
-            _consumer = consumer;
+            _consumer = consumer ?? throw new ArgumentNullException(nameof(consumer), "Consumer cannot be null. Ensure it is registered in the service collection.");
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -16,7 +17,7 @@ namespace InventoryManagementService.Services
             await _consumer.ConsumeAsync(stoppingToken);
         }
 
-        public async ValueTask DisposeAsync()
+        async ValueTask IAsyncDisposable.DisposeAsync()
         {
             // Fix: Ensure the consumer implements IDisposable or IAsyncDisposable
             if (_consumer is IAsyncDisposable asyncDisposableConsumer)
@@ -27,6 +28,8 @@ namespace InventoryManagementService.Services
             {
                 disposableConsumer.Dispose();
             }
+            // Fix: Call GC.SuppressFinalize to prevent derived types with finalizers from needing to re-implement IDisposable
+            GC.SuppressFinalize(this);
         }
     }
 }

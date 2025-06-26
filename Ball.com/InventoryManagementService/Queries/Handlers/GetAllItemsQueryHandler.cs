@@ -10,10 +10,10 @@ namespace InventoryManagementService.Queries.Handlers
 
         public GetAllItemsQueryHandler(AppDbContext context)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<IEnumerable<ItemReadModel>> HandleAsync(GetAllItemsQuery query)
+        public async Task<IEnumerable<ItemReadModel>?> HandleAsync(GetAllItemsQuery query)
         {
             return await _context.ItemReadModels.ToListAsync();
         }
