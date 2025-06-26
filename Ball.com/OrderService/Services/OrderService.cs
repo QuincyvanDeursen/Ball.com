@@ -26,12 +26,29 @@ namespace OrderService.Services
 		{
 			//Check total quantity of order items <= 20
 			int totalQuantity = 0;
+			Dictionary<Guid, int> items = new Dictionary<Guid, int>();
 			foreach (OrderItemCreateDto item in orderDto.OrderItems)
 			{
+				//If the item is already in the dictionary, add item quantity to existing value
+				//If the item does not exist in dictionary, add it with a default value of "0 + item quantity"
+				items[item.ItemId] = items.GetValueOrDefault(item.ItemId) + item.Quantity;
 				totalQuantity += item.Quantity;
+
 			}
 			if (totalQuantity > 20)
+			{
 				throw new ArgumentException("You can only order a maximum of 20 items at a time");
+			}
+
+			//For every item in the dictionary, look up the current stock and see if this order can be completed
+			foreach (var (itemId, quantity) in items)
+			{
+				Item realItem = await _itemRepository.GetByIdAsync(itemId);
+				if (quantity > realItem.Stock)
+				{
+					throw new ArgumentException("Inventory does not have enough items to complete this order");
+				}
+			}
 
 			//Convert Dto to Order
 			var orderId = Guid.NewGuid();
