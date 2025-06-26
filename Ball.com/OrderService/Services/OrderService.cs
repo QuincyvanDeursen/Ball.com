@@ -24,8 +24,13 @@ namespace OrderService.Services
 		}
 		public async Task Create(OrderCreateDto orderDto)
 		{
-			//Check quantity of order items <= 20
-			if (orderDto.OrderItems.Count > 20)
+			//Check total quantity of order items <= 20
+			int totalQuantity = 0;
+			foreach (OrderItemCreateDto item in orderDto.OrderItems)
+			{
+				totalQuantity += item.Quantity;
+			}
+			if (totalQuantity > 20)
 				throw new ArgumentException("You can only order a maximum of 20 items at a time");
 
 			//Convert Dto to Order
