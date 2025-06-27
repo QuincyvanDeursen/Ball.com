@@ -26,8 +26,6 @@ namespace OrderService.Handlers
 			try
 			{
 				await _itemService.Get(@event.ItemId);
-
-				// Optional: Als de klant al bestaat, hoef je hem niet opnieuw aan te maken
 				_logger.LogInformation("Item with ID {ItemId} already exists. Skipping creation.", @event.ItemId);
 				return;
 			}

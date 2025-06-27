@@ -1,4 +1,5 @@
-﻿using OrderService.Domain;
+﻿using Microsoft.Identity.Client;
+using OrderService.Domain;
 using OrderService.Dto;
 using OrderService.Repository.Interfaces;
 using OrderService.Services.Interfaces;
@@ -43,6 +44,20 @@ namespace OrderService.Services
 			};
 			await _itemRepository.UpdateAsync(item);
 			
+		}
+
+		public async Task UpdateStock(Guid id, int amount)
+		{
+			var olditem = await _itemRepository.GetByIdAsync(id);
+			if (olditem == null) throw new KeyNotFoundException($"Item with ID {id} not found");
+			var item = new Item
+			{
+				ItemId = olditem.ItemId,
+				Name = olditem.Name,
+				Price = olditem.Price,
+				Stock = olditem.Stock - amount,
+			};
+			await _itemRepository.UpdateAsync(item);
 		}
 	}
 }
