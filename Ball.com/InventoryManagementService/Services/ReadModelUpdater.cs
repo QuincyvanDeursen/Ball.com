@@ -39,7 +39,7 @@ namespace InventoryManagementService.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<ItemReadModel> RestoreAndSave(IEnumerable<ItemDomainEvent> events)
+        public async Task<ItemReadModel?> RestoreAndSave(IEnumerable<ItemDomainEvent> events)
         {
             var readModel = new ItemReadModel();
 
@@ -50,7 +50,8 @@ namespace InventoryManagementService.Services
 
             if (readModel.Id == Guid.Empty)
             {
-                throw new InvalidOperationException("ItemCreatedDomainEvent is required to initialize the read model.");
+                // Geen ItemCreatedDomainEvent gevonden, dus sla op overslaan
+                return null;
             }
 
             _context.ItemReadModels.Add(readModel);

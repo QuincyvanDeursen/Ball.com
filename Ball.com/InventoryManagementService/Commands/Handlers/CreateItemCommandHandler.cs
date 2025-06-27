@@ -1,7 +1,5 @@
 ﻿using InventoryManagementService.Events;
-using InventoryManagementService.Models;
 using InventoryManagementService.Repositories;
-using InventoryManagementService.Services;
 using Shared.Infrastructure.Messaging.Events.Items;
 using Shared.Infrastructure.Messaging.Interfaces;
 
@@ -14,19 +12,19 @@ namespace InventoryManagementService.Commands.Handlers
 
         public CreateItemCommandHandler(IEventStore eventStore, IEventPublisher publisher)
         {
-            _eventStore = eventStore;
-            _publisher = publisher;
+            _eventStore = eventStore ?? throw new ArgumentNullException(nameof(eventStore));
+            _publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
         }
 
         public async Task HandleAsync(CreateItemCommand command)
         {
             var @event = new ItemCreatedDomainEvent
             {
-                ItemId = command.Id,
+                ItemId = command.ItemId,
                 Name = command.Name,
                 Description = command.Description,
                 Price = command.Price,
-                Stock = command.InitialStock
+                Stock = command.Stock
             };
 
             await _eventStore.SaveAsync(@event);
@@ -34,11 +32,12 @@ namespace InventoryManagementService.Commands.Handlers
             // Create a new item instance and apply the event to it
             var item = new ItemCreatedEvent
             {
-                Id = command.Id,
+                Id = Guid.NewGuid(),
+                ItemId = command.ItemId,
                 Name = command.Name,
                 Description = command.Description,
                 Price = command.Price,
-                Stock = command.InitialStock
+                Stock = command.Stock
             };
 
 

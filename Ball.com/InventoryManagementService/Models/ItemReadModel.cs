@@ -27,9 +27,9 @@ namespace InventoryManagementService.Models
                     break;
 
                 case ItemUpdatedDomainEvent e:
-                    Name = e.Name;
-                    Description = e.Description;
-                    Price = e.Price;
+                    Name = e.Name ?? Name;
+                    Description = e.Description ?? Description;
+                    Price = e.Price ?? Price;
                     break;
             }
         }

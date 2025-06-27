@@ -11,9 +11,9 @@ namespace Shared.Infrastructure.Messaging.Events.Items
         public override string EventType => "item.updated";
 
         public Guid ItemId { get; init; }
-        public string Name { get; init; } = null!;
-        public string Description { get; init; } = null!;
-        public decimal Price { get; init; }
+        public string? Name { get; init; } = null;
+        public string? Description { get; init; } = null;
+        public decimal? Price { get; init; }
 
     }
 }

@@ -102,5 +102,28 @@ services:
         max_attempts: 3
         window: 120s
 
+  InventoryService:
+    build:
+      context: .
+      dockerfile: InventoryManagementService/Dockerfile
+    container_name: inventory_service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      sqlserver:
+        condition: service_healthy
+    ports:
+      - "8086:8080"
+      - "8087:8081"
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+
 volumes:
   sqlvolume:

@@ -36,6 +36,43 @@ namespace InventoryManagementService.Controllers
             _updateHandler = updateHandler ?? throw new ArgumentNullException(nameof(updateHandler));
         }
 
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            try
+            {
+                var query = new GetAllItemsQuery();
+                var products = await _getAllHandler.HandleAsync(query);
+                return Ok(products);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error retrieving items: {ex.Message}");
+
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            try
+            {
+
+                if (id == Guid.Empty) return BadRequest("Item ID is required.");
+                var query = new GetItemsByIdQuery { Id = id };
+                var product = await _getByIdHandler.HandleAsync(query);
+                if (product == null) return NotFound();
+                return Ok(product);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error processing request: {ex.Message}");
+
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create(CreateItemCommand command)
         {
@@ -45,7 +82,7 @@ namespace InventoryManagementService.Controllers
                 if (string.IsNullOrWhiteSpace(command.Name)) return BadRequest("Item name is required.");
                 if (string.IsNullOrWhiteSpace(command.Description)) return BadRequest("Description is required.");
                 if (command.Price <= 0) return BadRequest("Item price must be greater than zero.");
-                if (command.InitialStock < 0) return BadRequest("Initial stock cannot be negative.");
+                if (command.Stock < 0) return BadRequest("Initial stock cannot be negative.");
                 await _createHandler.HandleAsync(command);
                 return Ok();
             }
@@ -87,41 +124,6 @@ namespace InventoryManagementService.Controllers
             catch (Exception ex)
             {
                 return BadRequest($"Error processing command: {ex.Message}");
-            }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            try
-            {
-                var query = new GetAllItemsQuery();
-                var products = await _getAllHandler.HandleAsync(query);
-                return Ok(products);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Error retrieving items: {ex.Message}");
-
-            }
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
-        {
-            try
-            {
-
-                if (id == Guid.Empty) return BadRequest("Item ID is required.");
-                var query = new GetItemsByIdQuery { Id = id };
-                var product = await _getByIdHandler.HandleAsync(query);
-                if (product == null) return NotFound();
-                return Ok(product);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Error processing request: {ex.Message}");
-
             }
         }
 
