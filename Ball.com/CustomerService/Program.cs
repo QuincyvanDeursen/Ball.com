@@ -1,3 +1,4 @@
+using CustomerService.BackgroundServices;   // ← for CsvPollingService
 using CustomerService.Configuration;
 using CustomerService.Database;
 using CustomerService.Domain;
@@ -17,6 +18,10 @@ builder.Services.AddDbContext<CustomerDbContext>(
 // Add services to the container.
 builder.Services.AddScoped<ICustomerRepo, CustomerRepo>();
 builder.Services.AddScoped<ICustomerService, CustomerService.Services.CustomerService>();
+
+// poll the CSV blob & upsert every row
+builder.Services.AddHttpClient();  //enables IHttpClientFactory
+builder.Services.AddHostedService<CsvPollingService>();  //background worker
 
 //RabbitMq setup, zie configuration folder.
 builder.Services.AddRabbitMqMessaging(builder.Configuration);
