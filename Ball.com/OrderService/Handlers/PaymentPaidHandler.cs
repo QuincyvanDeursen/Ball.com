@@ -2,16 +2,15 @@
 using OrderService.Dto;
 using OrderService.Services.Interfaces;
 using Shared.Infrastructure.Messaging.Events.Interfaces;
-using Shared.Infrastructure.Messaging.Events.Orders;
 using Shared.Infrastructure.Messaging.Events.Payments;
 
 namespace OrderService.Handlers
 {
-	public class OrderPaidHandler : IEventHandler<PaymentPaidEvent>
+	public class PaymentPaidHandler : IEventHandler<PaymentPaidEvent>
 	{
-		private readonly ILogger<OrderPaidHandler> _logger;
+		private readonly ILogger<PaymentPaidHandler> _logger;
 		private readonly IOrderService _orderService;
-		public OrderPaidHandler(ILogger<OrderPaidHandler> logger, IOrderService orderService)
+		public PaymentPaidHandler(ILogger<PaymentPaidHandler> logger, IOrderService orderService)
 		{
 			_logger = logger;
 			_orderService = orderService;

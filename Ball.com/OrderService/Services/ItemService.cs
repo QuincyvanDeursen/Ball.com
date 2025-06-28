@@ -6,58 +6,53 @@ using OrderService.Services.Interfaces;
 
 namespace OrderService.Services
 {
-	public class ItemService : IItemService
-	{
-		private readonly IItemRepository _itemRepository;
-		public ItemService(IItemRepository itemRepository)
-		{
-			_itemRepository = itemRepository;
-		}
+    public class ItemService : IItemService
+    {
+        private readonly IItemRepository _itemRepository;
+        public ItemService(IItemRepository itemRepository)
+        {
+            _itemRepository = itemRepository;
+        }
 
-		public async Task Create(ItemCreateDto itemDto)
-		{
-			var item = new Item
-			{
-				ItemId = itemDto.ItemId,
-				Name = itemDto.Name,
-				Price = itemDto.Price,
-				Stock = itemDto.Stock,
-			};
-			await _itemRepository.CreateAsync(item);
-		}
+        public async Task Create(ItemCreateDto itemDto)
+        {
+            var item = new Item
+            {
+                ItemId = itemDto.ItemId,
+                Name = itemDto.Name,
+                Price = itemDto.Price,
+                Stock = itemDto.Stock,
+            };
+            await _itemRepository.CreateAsync(item);
+        }
 
-		public async Task<Item> Get(Guid id)
-		{
-			return await _itemRepository.GetByIdAsync(id);
-		}
+        public async Task<Item> Get(Guid id)
+        {
+            return await _itemRepository.GetByIdAsync(id);
+        }
 
-		public async Task Update(ItemUpdateDto itemDto)
-		{
-			var olditem = await _itemRepository.GetByIdAsync(itemDto.ItemId);
-			if (olditem == null) throw new KeyNotFoundException($"Item with ID {itemDto.ItemId} not found");
-			var item = new Item
-			{
-				ItemId = itemDto.ItemId,
-				Name = itemDto.Name,
-				Price = itemDto.Price,
-				Stock = olditem.Stock,
-			};
-			await _itemRepository.UpdateAsync(item);
-			
-		}
+        public async Task Update(ItemUpdateDto itemDto)
+        {
+            var olditem = await _itemRepository.GetByIdAsync(itemDto.ItemId);
+            if (olditem == null) throw new KeyNotFoundException($"Item with ID {itemDto.ItemId} not found");
 
-		public async Task UpdateStock(Guid id, int amount)
-		{
-			var olditem = await _itemRepository.GetByIdAsync(id);
-			if (olditem == null) throw new KeyNotFoundException($"Item with ID {id} not found");
-			var item = new Item
-			{
-				ItemId = olditem.ItemId,
-				Name = olditem.Name,
-				Price = olditem.Price,
-				Stock = olditem.Stock - amount,
-			};
-			await _itemRepository.UpdateAsync(item);
-		}
-	}
+            olditem.ItemId = itemDto.ItemId;
+            olditem.Name = itemDto.Name ?? olditem.Name;
+            olditem.Price = itemDto.Price ?? olditem.Price;
+            olditem.Stock = olditem.Stock;
+
+            await _itemRepository.UpdateAsync(olditem);
+
+        }
+
+        public async Task UpdateStock(Guid id, int amount)
+        {
+            var olditem = await _itemRepository.GetByIdAsync(id);
+            if (olditem == null) throw new KeyNotFoundException($"Item with ID {id} not found");
+
+            olditem.Stock = olditem.Stock + amount;
+
+            await _itemRepository.UpdateAsync(olditem);
+        }
+    }
 }

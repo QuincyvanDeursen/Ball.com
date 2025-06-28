@@ -63,68 +63,85 @@ using (var scope = app.Services.CreateScope())
     var dbContext = scope.ServiceProvider.GetRequiredService<PaymentDbContext>();
     dbContext.Database.Migrate();
 
-    if (!dbContext.Payments.Any())
-    {
-        dbContext.AddRange(
-            new Payment
-            {
-                Id = Guid.Parse("e5e5e5e5-e5e5-5555-eeee-555555555555"),
-                TotalPrice = 99.99m,
-                Status = PaymentStatus.Paid,
+//    if (!dbContext.Payments.Any())
+//    {
+//        dbContext.AddRange(
+//            new Payment
+//            {
+//                Id = Guid.Parse("e5e5e5e5-e5e5-5555-eeee-555555555555"),
+//                TotalPrice = 99.99m,
+//                Status = PaymentStatus.Paid,
 
-                Customer = new CustomerSnapshot
-                {
-                    Id = Guid.Parse("a1a1a1a1-a1a1-1111-aaaa-111111111111"),
-                    FirstName = "Quincy",
-                    LastName = "van Deursen",
-                    PhoneNumber = "0612345678",
-                    Email = "jvd@student.avans.nl",
-                    Address = "Avansstraat 123, 1234AB Breda"
-                },
-            },
-new Payment
-{
-    Id = Guid.Parse("b7b7b7b7-b7b7-7777-bbbb-777777777777"),
-    TotalPrice = 49.50m,
-    Status = PaymentStatus.Pending,
+//                Customer = new CustomerSnapshot
+//                {
+//                    Id = Guid.Parse("a1a1a1a1-a1a1-1111-aaaa-111111111111"),
+//                    FirstName = "Quincy",
+//                    LastName = "van Deursen",
+//                    PhoneNumber = "0612345678",
+//                    Email = "jvd@student.avans.nl",
+//                    Address = "Avansstraat 123, 1234AB Breda"
+//                },
+//            },
+//new Payment
+//{
+//    Id = Guid.Parse("b7b7b7b7-b7b7-7777-bbbb-777777777777"),
+//    TotalPrice = 49.50m,
+//    Status = PaymentStatus.Pending,
 
-    Customer = new CustomerSnapshot
-    {
-        Id = Guid.Parse("b2b2b2b2-b2b2-2222-bbbb-222222222222"),
-        FirstName = "Bart",
-        LastName = "Kroeten",
-        PhoneNumber = "0612345678",
-        Email = "qvd@student.avans.nl",
-        Address = "Avansstraat 456, 1234AB Breda"
-    },
-}
-        );
+//    Customer = new CustomerSnapshot
+//    {
+//        Id = Guid.Parse("b2b2b2b2-b2b2-2222-bbbb-222222222222"),
+//        FirstName = "Bart",
+//        LastName = "Kroeten",
+//        PhoneNumber = "0612345678",
+//        Email = "qvd@student.avans.nl",
+//        Address = "Avansstraat 456, 1234AB Breda"
+//    },
+//}
+//        );
 
-        dbContext.SaveChanges();
-    }
+//        dbContext.SaveChanges();
+//    }
 
     if (!dbContext.Customers.Any())
     {
         dbContext.AddRange(
-                 new Customer
-                 {
-                     Id = Guid.Parse("a1a1a1a1-a1a1-1111-aaaa-111111111111"),
-                     FirstName = "Quincy",
-                     LastName = "van Deursen",
-                     PhoneNumber = "0612345678",
-                     Email = "jvd@student.avans.nl",
-                     Address = "Avansstraat 123, 1234AB Breda"
-                 },
-                 new Customer
-                 {
-                     Id = Guid.Parse("b2b2b2b2-b2b2-2222-bbbb-222222222222"),
-                     FirstName = "Bart",
-                     LastName = "Kroeten",
-                     PhoneNumber = "0612345678",
-                     Email = "qvd@student.avans.nl",
-                     Address = "Avansstraat 456, 1234AB Breda"
-
-                 });
+                            new Customer
+                            {
+                                Id = Guid.Parse("a1a1a1a1-a1a1-1111-aaaa-111111111111"),
+                                FirstName = "Quincy",
+                                LastName = "van Deursen",
+                                PhoneNumber = "0612345678",
+                                Email = "jvd@student.avans.nl",
+                                Address = "Avansstraat 123, 1234AB Breda"
+                            },
+                new Customer
+                {
+                    Id = Guid.Parse("b2b2b2b2-b2b2-2222-bbbb-222222222222"),
+                    FirstName = "Bart",
+                    LastName = "Kroeten",
+                    PhoneNumber = "0612345678",
+                    Email = "qvd@student.avans.nl",
+                    Address = "Avansstraat 456, 1234AB Breda"
+                },
+                new Customer
+                {
+                    Id = Guid.Parse("c3c3c3c3-c3c3-3333-cccc-333333333333"),
+                    FirstName = "Ruben",
+                    LastName = "van Tilburg",
+                    PhoneNumber = "0612345678",
+                    Email = "svd@student.avans.nl",
+                    Address = "Avansstraat 789, 1234AB Breda"
+                },
+                new Customer
+                {
+                    Id = Guid.Parse("d4d4d4d4-d4d4-4444-dddd-444444444444"),
+                    FirstName = "Marco",
+                    LastName = "Rietveld",
+                    PhoneNumber = "0612345678",
+                    Email = "bvd@student.avans.nl",
+                    Address = "Avansstraat 159, 1234AB Breda"
+                });
         dbContext.SaveChanges();
     }
 }

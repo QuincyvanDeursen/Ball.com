@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using PaymentService.Handlers;
-using PaymentService.Services;
 using Shared.Infrastructure.Messaging;
+using Shared.Infrastructure.Messaging.BackGroundService;
 using Shared.Infrastructure.Messaging.Configuration;
 using Shared.Infrastructure.Messaging.Events;
 using Shared.Infrastructure.Messaging.Events.Interfaces;

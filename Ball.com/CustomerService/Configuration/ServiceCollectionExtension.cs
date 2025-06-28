@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using Shared.Infrastructure.Messaging;
 using Shared.Infrastructure.Messaging.Configuration;
-using Shared.Infrastructure.Messaging.Events;
-using Shared.Infrastructure.Messaging.Events.Interfaces;
 using Shared.Infrastructure.Messaging.Interfaces;
 
 namespace CustomerService.Configuration
@@ -33,6 +31,7 @@ namespace CustomerService.Configuration
                 return new RabbitMqEventConsumer(factory, dispatcher, logger, settings.ServiceName);
             });
 
+            //only needed for listening
             //services.AddHostedService<RabbitMqBackgroundService>();
 
             return services;

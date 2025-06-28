@@ -38,16 +38,14 @@ namespace OrderService.Services
 		{
 			var oldCustomer = await _customerRepository.GetByIdAsync(customerDto.CustomerId);
 			if (oldCustomer == null) throw new KeyNotFoundException($"Customer with ID {customerDto.CustomerId} not found");
-			var customer = new Customer
-			{
-				CustomerId = customerDto.CustomerId,
-				Address = customerDto.Address,
-				Email = customerDto.Email,
-				PhoneNumber = customerDto.PhoneNumber,
-				FirstName = oldCustomer.FirstName,
-				LastName = oldCustomer.LastName,
-			};
-			await _customerRepository.UpdateAsync(customer);
+
+			oldCustomer.CustomerId = customerDto.CustomerId;
+			oldCustomer.Address = customerDto.Address;
+			oldCustomer.Email = customerDto.Email;
+			oldCustomer.PhoneNumber = customerDto.PhoneNumber;
+			oldCustomer.FirstName = oldCustomer.FirstName;
+
+			await _customerRepository.UpdateAsync(oldCustomer);
 		}
 	}
 }

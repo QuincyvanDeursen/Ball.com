@@ -2,10 +2,12 @@
 using OrderService.Handlers;
 using OrderService.Services;
 using Shared.Infrastructure.Messaging;
+using Shared.Infrastructure.Messaging.BackGroundService;
 using Shared.Infrastructure.Messaging.Configuration;
 using Shared.Infrastructure.Messaging.Events;
 using Shared.Infrastructure.Messaging.Events.Interfaces;
 using Shared.Infrastructure.Messaging.Events.Items;
+using Shared.Infrastructure.Messaging.Events.Payments;
 using Shared.Infrastructure.Messaging.Interfaces;
 
 namespace OrderService.Configuration
@@ -26,7 +28,12 @@ namespace OrderService.Configuration
 
             // 3. Event Handlers (scoped) dit zijn de events waar naar geluisterd wordt.
             services.AddScoped<IEventHandler<CustomerCreatedEvent>, CustomerCreatedHandler>();
+            services.AddScoped<IEventHandler<CustomerUpdatedEvent>, CustomerUpdatedHandler>();
             services.AddScoped<IEventHandler<ItemCreatedEvent>, ItemCreatedHandler>();
+            services.AddScoped<IEventHandler<ItemUpdatedEvent>, ItemUpdatedHandler>();
+            services.AddScoped<IEventHandler<PaymentCancelledEvent>, PaymentCancelledHandler>();
+            services.AddScoped<IEventHandler<PaymentPaidEvent>, PaymentPaidHandler>();
+            services.AddScoped<IEventHandler<StockUpdatedEvent>, StockUpdatedHandler>();
 
             // 4. RabbitMQ Consumer (singleton)
             services.AddSingleton<IEventConsumer>(sp =>

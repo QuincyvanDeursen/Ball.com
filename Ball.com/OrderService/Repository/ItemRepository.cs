@@ -40,7 +40,6 @@ namespace ItemService.Repository
 			{
 				throw new ArgumentNullException(nameof(item));
 			}
-			_context.Items.Update(item);
 			await _context.SaveChangesAsync();
 		}
 	}

@@ -28,7 +28,8 @@ namespace InventoryManagementService.Commands.Handlers
 
             var itemUpdatedEvent = new ItemUpdatedEvent
             {
-                Id = command.ItemId,
+                Id = Guid.NewGuid(),
+                ItemId = command.ItemId,
                 Name = command.Name,
                 Description = command.Description,
                 Price = command.Price

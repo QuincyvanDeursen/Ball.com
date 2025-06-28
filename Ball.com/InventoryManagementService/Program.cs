@@ -45,7 +45,7 @@ builder.Services.AddSwaggerGen(options =>
     options.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
-        Title = "Invetory (Products) API microservice Ball.com",
+        Title = "Inventory (Products) API microservice Ball.com",
         Description = "An ASP.NET Core Web API for managing inventory for Ball.com",
     });
 });

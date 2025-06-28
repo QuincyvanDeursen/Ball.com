@@ -40,7 +40,7 @@ namespace OrderService.Repository
 			{
 				throw new ArgumentNullException(nameof(customer));
 			}
-			_context.Customers.Update(customer);
+			//_context.Customers.Update(customer);
 			await _context.SaveChangesAsync();
 		}
 	}
