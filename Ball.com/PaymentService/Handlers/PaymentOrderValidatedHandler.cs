@@ -5,20 +5,20 @@ using Shared.Infrastructure.Messaging.Events.Orders;
 
 namespace PaymentService.Handlers
 {
-    public class PaymentOrderPlacedHandler : IEventHandler<OrderPlacedEvent>
+    public class PaymentOrderValidatedHandler : IEventHandler<OrderValidatedEvent>
     {
         private readonly IPaymentRepo _repo;
-        private readonly ILogger<PaymentOrderPlacedHandler> _logger;
+        private readonly ILogger<PaymentOrderValidatedHandler> _logger;
 
-        public PaymentOrderPlacedHandler(IPaymentRepo repo, ILogger<PaymentOrderPlacedHandler> logger)
+        public PaymentOrderValidatedHandler(IPaymentRepo repo, ILogger<PaymentOrderValidatedHandler> logger)
         {
             _repo = repo;
             _logger = logger;
         }
 
-        public async Task HandleAsync(OrderPlacedEvent @event)
+        public async Task HandleAsync(OrderValidatedEvent @event)
         {
-            _logger.LogInformation("Handling OrderCreated event for OrderId: {OrderId}", @event.OrderId);
+            _logger.LogInformation("Handling OrderValidated event for OrderId: {OrderId}", @event.OrderId);
 
             // Check if payment already exists for this order
             Payment existingPayment;
