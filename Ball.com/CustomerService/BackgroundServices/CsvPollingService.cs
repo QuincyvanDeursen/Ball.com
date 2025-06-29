@@ -26,6 +26,7 @@ namespace CustomerService.BackgroundServices
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            await Task.Delay(TimeSpan.FromMinutes(2), stoppingToken);
             var client = _httpFactory.CreateClient();
 
             // For testing, polls every 10s; switch to 24h in prod

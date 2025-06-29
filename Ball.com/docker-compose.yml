@@ -35,29 +35,7 @@ services:
       retries: 10
       start_period: 90s
     restart: unless-stopped
-  
-  customerservice:
-    build:
-      context: .
-      dockerfile: CustomerService/Dockerfile
-    container_name: customer_service
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-      sqlserver:
-        condition: service_healthy
-    ports:
-      - "8080:8080"
-      - "8081:8081"
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 120s
-        
+      
   paymentservice:
     build:
       context: .
@@ -124,6 +102,27 @@ services:
         max_attempts: 3
         window: 120s
 
+  customerservice:
+    build:
+      context: .
+      dockerfile: CustomerService/Dockerfile
+    container_name: customer_service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      sqlserver:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
 
 # volumes:
 #   sqlvolume:
