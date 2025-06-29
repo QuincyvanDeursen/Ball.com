@@ -83,13 +83,17 @@ namespace CustomerService.BackgroundServices
                         }
                         else 
                         {
-                            CustomerUpdateDto updateDto = new CustomerUpdateDto
+                            //Only update if address has changed (only updatable value)
+                            if (customer.Address != existingCustomer.Address)
                             {
-                                Id = existingCustomer.Id,
-                                Address = customer.Address,
-                                PhoneNumber = customer.PhoneNumber,
-                            };
-                            await service.Update(updateDto);
+								CustomerUpdateDto updateDto = new CustomerUpdateDto
+								{
+									Id = existingCustomer.Id,
+									Address = customer.Address,
+									PhoneNumber = customer.PhoneNumber,
+								};
+								await service.Update(updateDto);
+							}
                         }
                     }
 					_logger.LogInformation("Added {count} new customers from csv", count);
