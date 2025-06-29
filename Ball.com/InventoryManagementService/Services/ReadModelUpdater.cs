@@ -7,10 +7,12 @@ namespace InventoryManagementService.Services
     public class ReadModelUpdater : IReadModelUpdater
     {
         private readonly AppDbContext _context;
+        private readonly ILogger<ReadModelUpdater> _logger;
 
-        public ReadModelUpdater(AppDbContext context)
+        public ReadModelUpdater(AppDbContext context, ILogger<ReadModelUpdater> logger)
         {
             _context = context;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task ApplyAsync(ItemDomainEvent @event)
@@ -43,14 +45,15 @@ namespace InventoryManagementService.Services
         {
             var readModel = new ItemReadModel();
 
-            foreach (var @event in events.OrderBy(e => e.Timestamp))
+            foreach (var @event in events.OrderByDescending(e => e.Timestamp))
             {
+                _logger.LogInformation("Applying event of type {EventType} with ID {EventId} to read model", @event.GetType().Name, @event.ItemId);
                 readModel.Apply(@event);
             }
 
             if (readModel.Id == Guid.Empty)
             {
-                // Geen ItemCreatedDomainEvent gevonden, dus sla op overslaan
+            
                 return null;
             }
 

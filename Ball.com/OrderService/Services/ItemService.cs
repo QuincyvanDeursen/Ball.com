@@ -21,7 +21,7 @@ namespace OrderService.Services
                 ItemId = itemDto.ItemId,
                 Name = itemDto.Name,
                 Price = itemDto.Price,
-                Stock = itemDto.Stock,
+               
             };
             await _itemRepository.CreateAsync(item);
         }
@@ -39,7 +39,6 @@ namespace OrderService.Services
             olditem.ItemId = itemDto.ItemId;
             olditem.Name = itemDto.Name ?? olditem.Name;
             olditem.Price = itemDto.Price ?? olditem.Price;
-            olditem.Stock = olditem.Stock;
 
             await _itemRepository.UpdateAsync(olditem);
 

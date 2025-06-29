@@ -24,7 +24,7 @@ namespace OrderService.Services
 		}
 		public async Task Create(OrderCreateDto orderDto)
 		{
-			if (!await IsValidOrder(orderDto)) {
+			if (!IsValidOrder(orderDto)) {
 				throw new ArgumentException("Invalid Order");
 			}
 
@@ -197,7 +197,7 @@ namespace OrderService.Services
 			return await _customerRepository.GetByIdAsync(customerId);
 		}
 
-		public async Task<Boolean> IsValidOrder(OrderCreateDto orderCreateDto)
+		private bool IsValidOrder(OrderCreateDto orderCreateDto)
 		{
 			//Check total quantity of order items <= 20
 			int totalQuantity = 0;
@@ -214,16 +214,7 @@ namespace OrderService.Services
 			{
 				throw new ArgumentException("You can only order a maximum of 20 items at a time");
 			}
-
-			//For every item in the dictionary, look up the current stock and see if this order can be completed
-			foreach (var (itemId, quantity) in items)
-			{
-				Item realItem = await _itemRepository.GetByIdAsync(itemId);
-				if (quantity > realItem.Stock)
-				{
-					throw new ArgumentException("Inventory does not have enough items to complete this order");
-				}
-			}
+			
 			return true;
 		}
 	}

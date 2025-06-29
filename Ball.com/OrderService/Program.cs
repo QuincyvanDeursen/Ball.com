@@ -79,21 +79,18 @@ using (var scope = app.Services.CreateScope())
 								ItemId = Guid.Parse("1a1a1a1a-1a1a-1111-aaaa-111111111111"),
 								Name = "Laptop",
 								Price = 1200.00m,
-								Stock = 50
 							},
 							new Item
 							{
 								ItemId = Guid.Parse("2b2b2b2b-2b2b-2222-bbbb-222222222222"),
 								Name = "Smartphone",
 								Price = 800.00m,
-								Stock = 100
 							},
 							new Item
 							{
 								ItemId = Guid.Parse("3c3c3c3c-3c3c-3333-cccc-333333333333"),
 								Name = "Headphones",
 								Price = 200.00m,
-								Stock = 75
 							});
 
 		dbContext.SaveChanges();

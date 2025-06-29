@@ -26,7 +26,7 @@ namespace PaymentService.Repository
                 .Include(p => p.Customer)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
-            return payment is null ? throw new InvalidOperationException($"Payment with id '{id}' was not found.") : payment;
+            return payment is null ? throw new KeyNotFoundException($"Payment with id '{id}' was not found.") : payment;
         }
 
         public async Task UpdateAsync(Payment payment)
@@ -47,7 +47,7 @@ namespace PaymentService.Repository
             var payment = await context.Payments
                 .Include(p => p.Customer)
                 .FirstOrDefaultAsync(p => p.OrderId == orderId);
-            return payment is null ? throw new InvalidOperationException($"Payment with order id '{orderId}' was not found.") : payment;
+            return payment is null ? throw new KeyNotFoundException($"Payment with order id '{orderId}' was not found.") : payment;
 
         }
     }

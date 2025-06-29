@@ -57,7 +57,7 @@ namespace CustomerService.BackgroundServices
                             FirstName = cols[1],
                             LastName = cols[2],
                             PhoneNumber = cols[3],
-                            Address = cols[4]
+                            Address = cols[4].Trim('"')
                         };
 						csvCustomers.Add(customer);
 					}

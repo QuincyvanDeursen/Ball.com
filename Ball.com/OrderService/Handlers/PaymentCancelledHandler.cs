@@ -36,8 +36,10 @@ namespace OrderService.Handlers
 				PaymentStatus = PaymentStatus.Cancelled,
 				OrderStatus	= OrderStatus.Cancelled,
 			};
-			await _orderService.Update(orderUpdateDto);
+			await _orderService.UpdateAndSendEvent(orderUpdateDto);
 			_logger.LogInformation("Payment and Order cancelled successfully for OrderId: {OrderId}", @event.OrderId);
+
+
 
 		}
 	}

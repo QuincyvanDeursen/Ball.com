@@ -99,8 +99,6 @@ namespace InventoryManagementService.Controllers
             {
                 if (command == null) return BadRequest("Command cannot be null.");
                 if (command.ItemId == Guid.Empty) return BadRequest("Item ID is required.");
-                if (string.IsNullOrWhiteSpace(command.Name)) return BadRequest("Item name is required.");
-                if (string.IsNullOrWhiteSpace(command.Description)) return BadRequest("Description is required.");
                 if (command.Price <= 0 && command.Price != null) return BadRequest("Item price must be greater than zero.");
                 await _updateHandler.HandleAsync(command);
                 return Ok();

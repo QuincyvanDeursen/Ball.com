@@ -36,19 +36,23 @@ namespace InventoryManagementService.EventHandlers
             bool validOrder = true;
             foreach (var item in @event.Items)
             {
+                _logger.LogInformation("Validating OrderItem with ItemId: {ItemId} for OrderId: {OrderId}", item.ItemId, @event.OrderId);
                 if (!await ValidateOrderItemAsync(item))
                 {
+                    
                     validOrder = false;
                     break;
                 }
                 _logger.LogInformation("Validated OrderItem with ItemId: {ItemId} for OrderId: {OrderId}", item.ItemId, @event.OrderId);
             }
+            foreach (var item in @event.Items)
+            {
+                await ProcessOrderItemAsync(item);
+            }
+
             if (validOrder)
             {
-                foreach (var item in @event.Items)
-                {
-                    await ProcessOrderItemAsync(item);
-                }
+
                 OrderValidatedEvent orderValidatedEvent = new OrderValidatedEvent
                 {
                     OrderId = @event.OrderId,
@@ -93,8 +97,11 @@ namespace InventoryManagementService.EventHandlers
 				return false; // Item doesnt exist, order is invalid
 			}
 
-			// Check if the item exists and has sufficient stock
-			if (itemReadModel.Stock < item.OrderQuantity)
+            // Check if the item exists and has sufficient stock
+            _logger.LogInformation("Checking stock for ItemId: {ItemId}. Requested: {Requested}, Available: {Available}", 
+                item.ItemId, item.OrderQuantity, itemReadModel.Stock);
+
+            if (itemReadModel.Stock < item.OrderQuantity)
 			{
 				_logger.LogWarning("Insufficient stock for ItemId: {ItemId}. Requested: {Requested}, Available: {Available}",
 					item.ItemId, item.OrderQuantity, itemReadModel?.Stock ?? 0);
@@ -122,9 +129,11 @@ namespace InventoryManagementService.EventHandlers
             var stockUpdatedEvent = new StockUpdatedEvent
             {
                 ItemId = itemReadModel!.Id,
-                Amount = item.OrderQuantity,
+                Amount = item.OrderQuantity * -1,
                 OccurredOn = DateTime.UtcNow
             };
+
+            await _eventPublisher.PublishAsync(stockUpdatedEvent);
         }
     }
 }

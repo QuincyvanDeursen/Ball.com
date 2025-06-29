@@ -27,6 +27,7 @@ namespace Shared.Infrastructure.Messaging
             { "item.created", typeof(ItemCreatedEvent) },
             { "item.updated", typeof(ItemUpdatedEvent) },
             { "stock.updated", typeof(StockUpdatedEvent) },
+            {"order.validated", typeof(OrderValidatedEvent) }
             // Voeg hier je andere event mappings toe
         };
 

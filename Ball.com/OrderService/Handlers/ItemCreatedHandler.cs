@@ -35,8 +35,7 @@ namespace OrderService.Handlers
 				{
 					ItemId = @event.ItemId,
 					Price = @event.Price,
-					Name = @event.Name,
-					Stock = @event.Stock,
+					Name = @event.Name
 				};
 			}
 

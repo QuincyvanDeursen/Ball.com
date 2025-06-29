@@ -7,6 +7,7 @@ using Shared.Infrastructure.Messaging.Configuration;
 using Shared.Infrastructure.Messaging.Events;
 using Shared.Infrastructure.Messaging.Events.Interfaces;
 using Shared.Infrastructure.Messaging.Events.Items;
+using Shared.Infrastructure.Messaging.Events.Orders;
 using Shared.Infrastructure.Messaging.Events.Payments;
 using Shared.Infrastructure.Messaging.Interfaces;
 
@@ -33,6 +34,8 @@ namespace OrderService.Configuration
             services.AddScoped<IEventHandler<ItemUpdatedEvent>, ItemUpdatedHandler>();
             services.AddScoped<IEventHandler<PaymentCancelledEvent>, PaymentCancelledHandler>();
             services.AddScoped<IEventHandler<PaymentPaidEvent>, PaymentPaidHandler>();
+            services.AddScoped<IEventHandler<OrderValidatedEvent>, OrderValidatedHandler>();
+            services.AddScoped<IEventHandler<OrderCancelledEvent>, OrderCancelledHandler>();
 
             // 4. RabbitMQ Consumer (singleton)
             services.AddSingleton<IEventConsumer>(sp =>

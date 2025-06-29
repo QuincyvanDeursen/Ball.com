@@ -27,8 +27,9 @@ namespace OrderService.Handlers
 			OrderUpdateDto orderUpdateDto = new OrderUpdateDto
 			{
 				OrderId = @event.OrderId,
-				OrderStatus = Domain.OrderStatus.Cancelled
-			};
+				OrderStatus = Domain.OrderStatus.Cancelled,
+				PaymentStatus = Domain.PaymentStatus.Cancelled
+            };
 			await _orderService.Update(orderUpdateDto);
 
 			_logger.LogInformation("Order.Cancelled event processed successfully for OrderId: {OrderId}", @event.OrderId);
