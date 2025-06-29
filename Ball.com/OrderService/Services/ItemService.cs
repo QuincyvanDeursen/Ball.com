@@ -44,15 +44,5 @@ namespace OrderService.Services
             await _itemRepository.UpdateAsync(olditem);
 
         }
-
-        public async Task UpdateStock(Guid id, int amount)
-        {
-            var olditem = await _itemRepository.GetByIdAsync(id);
-            if (olditem == null) throw new KeyNotFoundException($"Item with ID {id} not found");
-
-            olditem.Stock = olditem.Stock + amount;
-
-            await _itemRepository.UpdateAsync(olditem);
-        }
     }
 }

@@ -9,6 +9,5 @@ namespace OrderService.Services.Interfaces
 		Task<Item> Get(Guid id);
 		Task Create(ItemCreateDto item);
 		Task Update(ItemUpdateDto item);
-		Task UpdateStock(Guid id, int amount);
 	}
 }

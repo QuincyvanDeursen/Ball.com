@@ -9,5 +9,6 @@ namespace OrderService.Services.Interfaces
 		Task<Order> Get(Guid id);
 		Task Create(OrderCreateDto order);
 		Task Update(OrderUpdateDto order);
+		Task UpdateAndSendEvent(OrderUpdateDto order);
 	}
 }

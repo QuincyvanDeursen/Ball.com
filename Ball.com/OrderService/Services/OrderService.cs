@@ -101,13 +101,13 @@ namespace OrderService.Services
 			return await _orderRepository.GetAllAsync();
 		}
 
-		public async Task Update(OrderUpdateDto orderDto)
+		public async Task UpdateAndSendEvent(OrderUpdateDto orderDto)
 		{
-			// 1. Retrieve the old payment and update the status
+			// 1. Retrieve the old order and update the status
 			var order = await _orderRepository.GetByIdAsync(orderDto.OrderId);
 			if (order == null) throw new KeyNotFoundException($"Order with ID {orderDto.OrderId} not found.");
 
-			// 1.1 Update order status (pending -> completed | cancelled)
+			// 1.1 Update order status (pending/validated -> completed | cancelled)
 			if (order.OrderStatus is OrderStatus.Completed or OrderStatus.Cancelled)
 				throw new InvalidOperationException("Order Status cannot be updated after it has been paid or cancelled.");
 
@@ -152,6 +152,34 @@ namespace OrderService.Services
 			if (orderDto.PaymentStatus != null)
 			{
 				order.PaymentStatus = (PaymentStatus) orderDto.PaymentStatus;
+			}
+
+			// 1.3 Update the payment in the database
+			await _orderRepository.UpdateAsync(order);
+		}
+
+		public async Task Update(OrderUpdateDto orderDto)
+		{
+			// 1. Retrieve the old order and update the status
+			var order = await _orderRepository.GetByIdAsync(orderDto.OrderId);
+			if (order == null) throw new KeyNotFoundException($"Order with ID {orderDto.OrderId} not found.");
+
+			// 1.1 Update order status (pending/validated -> completed | cancelled)
+			if (order.OrderStatus is OrderStatus.Completed or OrderStatus.Cancelled)
+				throw new InvalidOperationException("Order Status cannot be updated after it has been paid or cancelled.");
+
+			if (orderDto.OrderStatus != null)
+			{
+				order.OrderStatus = (OrderStatus)orderDto.OrderStatus;
+			}
+
+			// 1.2 Update payment status (pending -> completed | cancelled)
+			if (order.PaymentStatus is PaymentStatus.Paid or PaymentStatus.Cancelled)
+				throw new InvalidOperationException("Order Payment Status cannot be updated after it has been paid or cancelled.");
+
+			if (orderDto.PaymentStatus != null)
+			{
+				order.PaymentStatus = (PaymentStatus)orderDto.PaymentStatus;
 			}
 
 			// 1.3 Update the payment in the database
