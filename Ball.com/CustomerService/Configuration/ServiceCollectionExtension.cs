@@ -46,7 +46,7 @@ namespace CustomerService.Configuration
             });
 
             // ── 5) Run the consumer in the background ────────────────────────────
-            services.AddHostedService<RabbitMqBackgroundService>();
+            //services.AddHostedService<RabbitMqBackgroundService>();
 
             return services;
         }
