@@ -62,7 +62,7 @@ namespace CustomerService.Controllers
 
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
         public async Task<ActionResult> Put([FromBody] CustomerUpdateDto customer)
         {
             try
