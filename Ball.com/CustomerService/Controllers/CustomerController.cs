@@ -63,11 +63,11 @@ namespace CustomerService.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Put([FromBody] CustomerUpdateDto customer, Guid id)
+        public async Task<ActionResult> Put([FromBody] CustomerUpdateDto customer)
         {
             try
             {
-                await _customerService.Update(id, customer);
+                await _customerService.Update(customer);
                 return Ok();
             }
             catch (Exception e)
