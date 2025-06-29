@@ -1,13 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using CustomerService.Domain;
-using CustomerService.Repository.Interfaces;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using CustomerService.Domain;
+using CustomerService.Dto;
+using CustomerService.Services.Interfaces;
 
 namespace CustomerService.BackgroundServices
 {
@@ -46,33 +39,45 @@ namespace CustomerService.BackgroundServices
                                   .Skip(1);
 
                     using var scope = _serviceProvider.CreateScope();
-                    var repo = scope.ServiceProvider.GetRequiredService<ICustomerRepo>();
+                    var service = scope.ServiceProvider.GetRequiredService<ICustomerService>();
 
                     foreach (var row in csvRows)
                     {
                         var cols = row.Split(',');
 
+                        //Customer from CSV does not contain Email
                         var customer = new Customer
                         {
                             Id = Guid.NewGuid(),
-                            CompanyName = cols[0],
                             FirstName = cols[1],
                             LastName = cols[2],
                             PhoneNumber = cols[3],
                             Address = cols[4]
                         };
 
-                        var existing = await repo.GetCustomer(customer.Id);
+                        var existing = await service.Get(customer.Id);
                         if (existing == null)
-                            await repo.AddCustomer(customer);
+                        {
+                            CustomerCreateDto createDto = new CustomerCreateDto
+                            {
+                                FirstName = customer.FirstName,
+                                LastName = customer.LastName,
+                                PhoneNumber = customer.PhoneNumber,
+                                Address = customer.Address,
+                                Email = customer.Email,
+                            };
+                            await service.Create(createDto);
+                        }
                         else
                         {
-                            existing.CompanyName = customer.CompanyName;
-                            existing.FirstName = customer.FirstName;
-                            existing.LastName = customer.LastName;
-                            existing.PhoneNumber = customer.PhoneNumber;
-                            existing.Address = customer.Address;
-                            await repo.UpdateCustomer(existing);
+                            CustomerUpdateDto updateDto = new CustomerUpdateDto
+                            {
+                                Id = customer.Id,
+                                Address = customer.Address,
+                                PhoneNumber = customer.PhoneNumber,
+                                Email = customer.Email,
+                            };
+                            await service.Update(updateDto);
                         }
                     }
                 }
