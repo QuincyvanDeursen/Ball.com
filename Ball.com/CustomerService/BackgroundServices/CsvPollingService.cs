@@ -63,8 +63,7 @@ namespace CustomerService.BackgroundServices
                                 FirstName = customer.FirstName,
                                 LastName = customer.LastName,
                                 PhoneNumber = customer.PhoneNumber,
-                                Address = customer.Address,
-                                Email = customer.Email,
+                                Address = customer.Address
                             };
                             await service.Create(createDto);
                         }
@@ -74,8 +73,7 @@ namespace CustomerService.BackgroundServices
                             {
                                 Id = customer.Id,
                                 Address = customer.Address,
-                                PhoneNumber = customer.PhoneNumber,
-                                Email = customer.Email,
+                                PhoneNumber = customer.PhoneNumber
                             };
                             await service.Update(updateDto);
                         }
