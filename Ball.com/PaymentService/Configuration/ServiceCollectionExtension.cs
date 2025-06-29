@@ -27,7 +27,7 @@ namespace PaymentService.Configuration
             // 3. Event Handlers (scoped) dit zijn de events waar naar geluisterd wordt.
             services.AddScoped<IEventHandler<CustomerUpdatedEvent>, PaymentCustomerUpdateHandler>();
             services.AddScoped<IEventHandler<CustomerCreatedEvent>, PaymentCustomerCreatedHandler>();
-            services.AddScoped<IEventHandler<OrderPlacedEvent>, PaymentOrderValidatedHandler>();
+            services.AddScoped<IEventHandler<OrderValidatedEvent>, PaymentOrderValidatedHandler>();
             services.AddScoped<IEventHandler<OrderCancelledEvent>, PaymentOrderCancelledHandler>();
 
             // 4. RabbitMQ Consumer (singleton)

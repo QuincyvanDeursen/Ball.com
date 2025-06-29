@@ -33,7 +33,6 @@ namespace OrderService.Configuration
             services.AddScoped<IEventHandler<ItemUpdatedEvent>, ItemUpdatedHandler>();
             services.AddScoped<IEventHandler<PaymentCancelledEvent>, PaymentCancelledHandler>();
             services.AddScoped<IEventHandler<PaymentPaidEvent>, PaymentPaidHandler>();
-            services.AddScoped<IEventHandler<StockUpdatedEvent>, StockUpdatedHandler>();
 
             // 4. RabbitMQ Consumer (singleton)
             services.AddSingleton<IEventConsumer>(sp =>

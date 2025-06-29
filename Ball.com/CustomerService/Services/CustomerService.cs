@@ -68,10 +68,10 @@ namespace CustomerService.Services
 
         }
 
-        public async Task Update(Guid id, CustomerUpdateDto dto)
+        public async Task Update(CustomerUpdateDto dto)
         {
-            var customer = await _customerRepo.GetCustomer(id)
-                ?? throw new KeyNotFoundException($"Customer with ID {id} not found.");
+            var customer = await _customerRepo.GetCustomer(dto.Id)
+                ?? throw new KeyNotFoundException($"Customer with ID {dto.Id} not found.");
 
             customer.PhoneNumber = dto.PhoneNumber ?? customer.PhoneNumber;
             customer.Address = dto.Address ?? customer.Address;
