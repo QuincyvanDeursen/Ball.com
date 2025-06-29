@@ -1,4 +1,5 @@
-﻿using CustomerService.Domain;
+﻿using CustomerService.Controllers;
+using CustomerService.Domain;
 using CustomerService.Dto;
 using CustomerService.Services.Interfaces;
 
@@ -9,15 +10,18 @@ namespace CustomerService.BackgroundServices
         private readonly IHttpClientFactory _httpFactory;
         private readonly IServiceProvider _serviceProvider;
         private readonly string _csvUrl;
+		private readonly ILogger<CsvPollingService> _logger;
 
-        public CsvPollingService(
+		public CsvPollingService(
             IHttpClientFactory httpFactory,
             IConfiguration config,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider, 
+            ILogger<CsvPollingService> logger)
         {
             _httpFactory = httpFactory;
             _serviceProvider = serviceProvider;
             _csvUrl = config["ExternalCsvUrl"];
+            _logger = logger;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -41,6 +45,7 @@ namespace CustomerService.BackgroundServices
                     using var scope = _serviceProvider.CreateScope();
                     var service = scope.ServiceProvider.GetRequiredService<ICustomerService>();
 
+                    List<Customer> csvCustomers = new List<Customer>();
                     foreach (var row in csvRows)
                     {
                         var cols = row.Split(',');
@@ -48,37 +53,47 @@ namespace CustomerService.BackgroundServices
                         //Customer from CSV does not contain Email
                         var customer = new Customer
                         {
-                            Id = Guid.NewGuid(),
                             FirstName = cols[1],
                             LastName = cols[2],
                             PhoneNumber = cols[3],
                             Address = cols[4]
                         };
+						csvCustomers.Add(customer);
+					}
 
-                        var existing = await service.Get(customer.Id);
-                        if (existing == null)
+                    List<Customer> currentCustomers = new List<Customer>(await service.GetAll());
+
+                    var count = 0;
+                    foreach (var customer in csvCustomers)
+                    {
+                        //Check if the csv customer exists in our database (using phonenumber as uniqueness)
+                        var existingCustomer = currentCustomers.FirstOrDefault(c => c.PhoneNumber == customer.PhoneNumber);
+                        //If customer doesnt exist yet, create one
+                        if (existingCustomer == null)
                         {
                             CustomerCreateDto createDto = new CustomerCreateDto
                             {
                                 FirstName = customer.FirstName,
                                 LastName = customer.LastName,
                                 PhoneNumber = customer.PhoneNumber,
-                                Address = customer.Address
+                                Address = customer.Address,
                             };
                             await service.Create(createDto);
+                            count++;
                         }
-                        else
+                        else 
                         {
                             CustomerUpdateDto updateDto = new CustomerUpdateDto
                             {
-                                Id = customer.Id,
+                                Id = existingCustomer.Id,
                                 Address = customer.Address,
-                                PhoneNumber = customer.PhoneNumber
+                                PhoneNumber = customer.PhoneNumber,
                             };
                             await service.Update(updateDto);
                         }
                     }
-                }
+					_logger.LogInformation("Added {count} new customers from csv", count);
+				}
                 catch
                 {
                     // TODO: log error
